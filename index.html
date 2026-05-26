@@ -944,7 +944,7 @@
 
   <script>
     // ⚙️ Replace this with your deployed Apps Script Web App URL
-    const WEBAPP_URL = "https://script.google.com/macros/s/REPLACE_WITH_YOUR_DEPLOYMENT_ID/exec";
+    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyvuvLspDvtNgyQ3-22qSxamji88VtbB0T8flhsGYVLw-Se31g2hzN-Xb6LxfH5s0Nu2g/exec";
 
     const form = document.getElementById("registrationForm");
     const submitBtn = document.getElementById("submitBtn");
@@ -1008,8 +1008,8 @@
       setOptionsError("usedAI", !usedAI);
       if (!usedAI && !firstInvalid) firstInvalid = form.querySelector('.options[data-name="usedAI"]');
 
-      const motivation = getValue("motivation");
-      txt("motivation", motivation.length >= 5);
+      // `motivation` is optional. Clear any stale error state but never block on it.
+      document.getElementById("motivation").classList.remove("error");
 
       const topic = getValue("topicInterest");
       setOptionsError("topicInterest", !topic);
@@ -1028,7 +1028,7 @@
       consentWrap.style.borderColor = consent ? "" : "#FBD0D9";
       if (!consent && !firstInvalid) firstInvalid = document.getElementById("consent");
 
-      const valid = fullName && university && department && academicYear && emailOk && phoneOk && usedAI && motivation && topic && attendance && etiquette && consent;
+      const valid = fullName && university && department && academicYear && emailOk && phoneOk && usedAI && topic && attendance && etiquette && consent;
       return { valid, firstInvalid };
     }
 
