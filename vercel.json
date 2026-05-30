@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/p2p",
+      "destination": "/Brochure/prompt-to-productive-a4.html"
+    },
+    {
+      "source": "/p2p/day1",
+      "destination": "/Day%201/Day-1-Handnote.html"
+    }
+  ]
+}

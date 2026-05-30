@@ -1,0 +1,3206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day 01 Handnote · Hidden Mechanics of AI · ElevateX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="./Day-1-Handnote 2_files/css2" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0B1437;
+      --navy-2: #14224F;
+      --ink: #1A2348;
+      --body: #334155;
+      --muted: #64748B;
+      --line: #E2E8F0;
+      --line-2: #F1F5F9;
+      --blue: #2563EB;
+      --blue-2: #1D4ED8;
+      --blue-soft: #60A5FA;
+      --tint: #EFF6FF;
+      --tint-2: #F8FAFC;
+      --bg: #FFFFFF;
+      --accent: #FBBF24;
+      --green: #10B981;
+      --green-soft: #D1FAE5;
+      --amber: #F59E0B;
+      --amber-soft: #FEF3C7;
+      --red: #EF4444;
+      --red-soft: #FEE2E2;
+      --code-bg: #0F172A;
+      --code-tint: #1E293B;
+
+      --maxw: 1600px;
+      --pad: clamp(24px, 5vw, 80px);
+      --nav-h: 72px;
+      --radius: 20px;
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+      --shadow-glow: 0 0 30px rgba(37, 99, 235, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    ::selection {
+      background: rgba(37, 99, 235, 0.2);
+    }
+
+    /* ============================ NAV ============================ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+    }
+
+    .nav-inner {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      height: 100%;
+      padding: 0 var(--pad);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .nav-brand img {
+      height: 28px;
+    }
+
+    .nav-brand .tag {
+      font-family: 'Manrope', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--blue);
+      background: var(--tint);
+      padding: 6px 12px;
+      border-radius: 999px;
+      box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.1);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .nav-links::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-links a {
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 10px;
+      white-space: nowrap;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-links a:hover {
+      color: var(--blue);
+      background: var(--tint);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 880px) {
+      .nav-links {
+        display: none;
+      }
+    }
+
+    /* ============================ SECTION SHELL ============================ */
+    .section {
+      position: relative;
+      overflow: hidden;
+      scroll-margin-top: calc(var(--nav-h) + 16px);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 2;
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: clamp(80px, 10vw, 140px) var(--pad);
+    }
+
+    .section.tinted {
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--tint-2) 100%);
+    }
+
+    .section.plain {
+      background: #FFFFFF;
+    }
+
+    /* Decorative */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(80px);
+      opacity: 0.8;
+    }
+
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(37, 99, 235, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37, 99, 235, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(100% 100% at 50% 0%, #000 20%, transparent 80%);
+      -webkit-mask-image: radial-gradient(100% 100% at 50% 0%, #000 20%, transparent 80%);
+    }
+
+    /* Section heading block */
+    .sec-head {
+      position: relative;
+      margin-bottom: clamp(40px, 6vw, 60px);
+    }
+
+    .sec-head .ghost {
+      position: absolute;
+      right: -20px;
+      top: clamp(-60px, -8vw, -100px);
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(120px, 20vw, 280px);
+      font-weight: 900;
+      line-height: 0.8;
+      color: transparent;
+      -webkit-text-stroke: 2px var(--tint);
+      z-index: 0;
+      letter-spacing: -0.05em;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .kicker {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+      background: var(--tint);
+      border-radius: 999px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.1);
+    }
+
+    .kicker::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 10px var(--blue);
+    }
+
+    .sec-head h2 {
+      position: relative;
+      z-index: 1;
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(36px, 5vw, 56px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--navy);
+      margin: 0;
+      font-weight: 800;
+      max-width: 22ch;
+    }
+
+    .sec-head h2 .accent {
+      color: transparent;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-soft) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .sec-head .subtitle {
+      position: relative;
+      z-index: 1;
+      margin: 24px 0 0;
+      font-size: clamp(18px, 2vw, 22px);
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 70ch;
+    }
+
+    .flow>*+* {
+      margin-top: clamp(24px, 4vw, 40px);
+    }
+
+    /* ============================ HERO / COVER ============================ */
+    .hero-cover {
+      position: relative;
+      overflow: hidden;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      background:
+        radial-gradient(120% 100% at 100% 0%, rgba(37, 99, 235, 0.15), transparent 60%),
+        radial-gradient(100% 100% at 0% 100%, rgba(96, 165, 250, 0.15), transparent 60%),
+        linear-gradient(180deg, #FFFFFF 0%, var(--tint-2) 100%);
+    }
+
+    .hero-cover .wrap {
+      width: 100%;
+      padding-top: clamp(60px, 8vw, 120px);
+      padding-bottom: clamp(60px, 8vw, 120px);
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: clamp(40px, 8vw, 80px);
+    }
+
+    .hero-top .meta {
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-align: right;
+      line-height: 1.6;
+    }
+
+    .hero-top .meta strong {
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .hero-top img {
+      height: 56px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--blue);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      background: #fff;
+      border-radius: 999px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--line);
+    }
+
+    .eyebrow::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--blue);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 6px rgba(37, 99, 235, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+      }
+    }
+
+    .hero-cover h1 {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(56px, 12vw, 130px);
+      line-height: 0.95;
+      color: var(--navy);
+      margin: 24px 0 0;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-cover h1 .accent {
+      background: linear-gradient(135deg, var(--blue) 0%, #0ea5e9 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-cover .lede {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(18px, 2.5vw, 26px);
+      color: var(--body);
+      font-weight: 400;
+      margin: 32px 0 0;
+      max-width: 65ch;
+      line-height: 1.6;
+    }
+
+    .hero-cover .lede em {
+      color: var(--blue);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    .brief-card {
+      margin-top: clamp(40px, 6vw, 60px);
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: var(--radius);
+      padding: clamp(32px, 5vw, 48px);
+      position: relative;
+      box-shadow: var(--shadow-lg);
+      max-width: 1000px;
+    }
+
+    .brief-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 32px;
+      bottom: 32px;
+      width: 6px;
+      border-radius: 0 6px 6px 0;
+      background: linear-gradient(180deg, var(--blue), #0ea5e9);
+    }
+
+    .brief-card h3 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--blue);
+      margin: 0 0 16px;
+      font-weight: 800;
+    }
+
+    .brief-card p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--body);
+      margin: 0 0 16px;
+    }
+
+    .brief-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    .contents {
+      margin-top: clamp(48px, 6vw, 80px);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .toc-card {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toc-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-glow), var(--shadow-lg);
+      border-color: var(--blue-soft);
+    }
+
+    .toc-card .strip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--blue), var(--blue-soft));
+      opacity: 0.5;
+      transition: opacity 0.3s ease;
+    }
+
+    .toc-card:hover .strip {
+      opacity: 1;
+    }
+
+    .toc-card .num {
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--blue);
+      letter-spacing: 0.15em;
+    }
+
+    .toc-card h4 {
+      margin: 12px 0 8px;
+      font-size: 18px;
+      color: var(--navy);
+      font-family: 'Manrope', sans-serif;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .toc-card p {
+      font-size: 14px;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .hero-foot {
+      margin-top: clamp(24px, 4vw, 40px);
+      padding-top: 24px;
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+      width: 100%;
+    }
+
+    .hero-foot .foot-card {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(37, 99, 235, 0.08);
+      border-radius: 24px;
+      padding: 16px 20px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.02);
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
+      gap: 16px;
+    }
+
+    .hero-foot .foot-card:hover {
+      border-color: rgba(37, 99, 235, 0.2);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-glow), 0 12px 30px rgba(37, 99, 235, 0.08);
+    }
+
+    .hero-foot .foot-card .foot-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .hero-foot .foot-card .foot-divider {
+      width: 1px;
+      background: rgba(226, 232, 240, 0.8);
+      align-self: stretch;
+    }
+
+    .hero-foot .foot-card .label {
+      font-family: 'Manrope', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 4px;
+      display: inline-block;
+    }
+
+    .hero-foot .foot-card .title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .hero-foot .foot-card .social-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hero-foot .foot-card .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Manrope', sans-serif;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hero-foot .foot-card .social-btn svg {
+      flex-shrink: 0;
+    }
+
+    .hero-foot .foot-card .social-btn.linkedin {
+      background: rgba(10, 102, 194, 0.05);
+      border: 1px solid rgba(10, 102, 194, 0.1);
+      color: #0A66C2;
+    }
+
+    .hero-foot .foot-card .social-btn.linkedin:hover {
+      background: #0A66C2;
+      color: #FFFFFF;
+      border-color: #0A66C2;
+      box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2);
+    }
+
+    .hero-foot .foot-card .social-btn.website {
+      background: rgba(37, 99, 235, 0.05);
+      border: 1px solid rgba(37, 99, 235, 0.1);
+      color: var(--blue);
+    }
+
+    .hero-foot .foot-card .social-btn.website:hover {
+      background: var(--blue);
+      color: #FFFFFF;
+      border-color: var(--blue);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .hero-foot .foot-card .social-btn.facebook {
+      background: rgba(24, 119, 242, 0.05);
+      border: 1px solid rgba(24, 119, 242, 0.1);
+      color: #1877F2;
+    }
+
+    .hero-foot .foot-card .social-btn.facebook:hover {
+      background: #1877F2;
+      color: #FFFFFF;
+      border-color: #1877F2;
+      box-shadow: 0 4px 12px rgba(24, 119, 242, 0.2);
+    }
+
+    .hero-foot .foot-card .foot-logo-wrap {
+      display: flex;
+      align-items: center;
+      height: 36px;
+    }
+
+    .hero-foot .foot-card .foot-logo-wrap img {
+      height: 32px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    @media (max-width: 760px) {
+      .hero-foot .foot-card {
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+      }
+
+      .hero-foot .foot-card .foot-divider {
+        width: 100%;
+        height: 1px;
+        background: rgba(226, 232, 240, 0.8);
+      }
+    }
+
+    /* ============================ UTILITY HEADINGS / TEXT ============================ */
+    h3.section-h {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(22px, 3vw, 28px);
+      color: var(--navy);
+      margin: 0 0 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+    }
+
+    h3.section-h .tag-inline {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--blue);
+      background: var(--tint);
+      padding: 6px 14px;
+      border-radius: 8px;
+      margin-right: 14px;
+      vertical-align: middle;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    p.body-text {
+      margin: 0 0 16px;
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--body);
+      max-width: 80ch;
+    }
+
+    p.body-text:last-child {
+      margin-bottom: 0;
+    }
+
+    p.body-text strong {
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    /* ============================ GRID HELPERS ============================ */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    /* ============================ CALLOUTS ============================ */
+    .callout {
+      background: linear-gradient(135deg, var(--tint), var(--tint-2));
+      border-left: 4px solid var(--blue);
+      border-radius: 16px;
+      padding: 32px 40px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 20px;
+      line-height: 1.6;
+      color: var(--navy);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .callout .label {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--blue);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .callout-dark {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+      color: #fff;
+      border-radius: 20px;
+      padding: 40px 48px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 22px;
+      line-height: 1.6;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .callout-dark::after {
+      content: '';
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.4), transparent 60%);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .callout-dark .label {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--blue-soft);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    /* ============================ PROMPT BLOCKS ============================ */
+    .prompt-block {
+      background: var(--code-bg);
+      color: #E2E8F0;
+      border-radius: 16px;
+      padding: 28px 32px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: auto;
+      position: relative;
+      white-space: pre-wrap;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .prompt-block .label {
+      display: block;
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--blue-soft);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .prompt-block .token {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .prompt-block .comment {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .prompt-block-light {
+      background: #F8FAFC;
+      color: var(--navy);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 28px 32px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .prompt-block-light .label {
+      display: block;
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* ============================ FACT CARDS ============================ */
+    .fact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .fact-card {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .fact-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--blue-soft);
+    }
+
+    .fact-card .num {
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--blue);
+      letter-spacing: 0.15em;
+    }
+
+    .fact-card h4 {
+      margin: 10px 0 12px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 20px;
+      color: var(--navy);
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .fact-card p {
+      margin: 0;
+      font-size: 16px;
+      color: var(--body);
+      line-height: 1.6;
+    }
+
+    .fact-card p strong {
+      color: var(--navy);
+    }
+
+    .dcards .fact-card p {
+      margin-bottom: 10px;
+    }
+
+    .dcards .fact-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ============================ 4D DIAMOND ============================ */
+    .diamond-scroll-container {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .diamond-wrap {
+      position: relative;
+      width: 100%;
+      min-width: 800px;
+      height: 500px;
+      background: radial-gradient(120% 120% at 50% 0%, var(--tint-2), #FFFFFF);
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      transform-origin: top left;
+      transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .diamond-wrap .center-you {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 3px solid var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 900;
+      font-size: 24px;
+      color: var(--navy);
+      z-index: 2;
+      box-shadow: 0 15px 35px rgba(37, 99, 235, 0.2);
+    }
+
+    .diamond-wrap .node {
+      position: absolute;
+      width: 240px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px 24px;
+      text-align: center;
+      z-index: 2;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s ease;
+    }
+
+    .diamond-wrap .node:hover {
+      transform: scale(1.05);
+    }
+
+    .diamond-wrap .node h5 {
+      margin: 0 0 6px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      color: var(--navy);
+      font-weight: 900;
+    }
+
+    .diamond-wrap .node p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .diamond-wrap .node.top {
+      left: 50%;
+      top: 30px;
+      transform: translateX(-50%);
+    }
+
+    .diamond-wrap .node.bottom {
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%);
+    }
+
+    .diamond-wrap .node.left {
+      left: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .diamond-wrap .node.right {
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .diamond-wrap .node.top:hover {
+      transform: translateX(-50%) scale(1.05);
+    }
+
+    .diamond-wrap .node.bottom:hover {
+      transform: translateX(-50%) scale(1.05);
+    }
+
+    .diamond-wrap .node.left:hover {
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .diamond-wrap .node.right:hover {
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .diamond-wrap svg.lines {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ============================ CRAFT-RIO ============================ */
+    .craft-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .craft-card {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 32px 28px;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .craft-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--blue-soft);
+    }
+
+    .craft-card .letter {
+      font-family: 'Manrope', sans-serif;
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--blue);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .craft-card .name {
+      margin-top: 16px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .craft-card .desc {
+      margin-top: 10px;
+      font-size: 15px;
+      color: var(--body);
+      line-height: 1.6;
+    }
+
+    /* ============================ SPLIT (BEFORE/AFTER) ============================ */
+    .split-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: stretch;
+    }
+
+    .split-col {
+      padding: 32px;
+      border-radius: 20px;
+      border: 1px solid transparent;
+    }
+
+    .split-col.before {
+      background: #fff5f5;
+      border-color: #fecaca;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .split-col.after {
+      background: rgba(255, 255, 255, 0.6);
+      box-shadow: var(--shadow-sm);
+      border-color: rgba(30, 93, 255, 0.1);
+    }
+
+    .split-col .col-tag {
+      display: inline-block;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .split-col.before .col-tag {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .split-col.after .col-tag {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .split-col h4 {
+      margin: 0 0 16px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 22px;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .output-block {
+      background: var(--tint-2);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px 28px;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--body);
+      font-style: italic;
+    }
+
+    .output-block.bland {
+      background: #F8FAFC;
+      color: var(--muted);
+    }
+
+    .split-col .body-text {
+      margin-top: 20px;
+    }
+
+    /* ============================ TASK TABLE ============================ */
+    .table-scroll {
+      overflow: hidden;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      width: 100%;
+    }
+
+    .task-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+      background: #fff;
+      min-width: 540px;
+      transform-origin: top left;
+    }
+
+    .task-table th,
+    .task-table td {
+      padding: 20px 24px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+    }
+
+    @media (max-width: 760px) {
+      .task-table {
+        font-size: 18px;
+      }
+
+      .task-table th {
+        font-size: 15px;
+      }
+
+      .task-table th,
+      .task-table td {
+        padding: 16px 16px;
+      }
+    }
+
+    .task-table th {
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 800;
+      border-bottom: 2px solid var(--ink);
+      background: var(--tint-2);
+    }
+
+    .task-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .task-table td {
+      color: var(--body);
+    }
+
+    .task-table tr:hover td {
+      background: var(--tint-2);
+    }
+
+    .task-table .verdict {
+      display: inline-block;
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      padding: 6px 14px;
+      border-radius: 8px;
+      text-transform: uppercase;
+    }
+
+    .v-auto {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .v-aug {
+      background: var(--tint);
+      color: var(--blue);
+    }
+
+    .v-none {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .v-never {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    /* ============================ COMPARE COLS ============================ */
+    .compare-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .compare-col {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s ease;
+    }
+
+    .compare-col:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .compare-col .head {
+      font-family: 'Manrope', sans-serif;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--navy);
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .compare-col ul {
+      padding-left: 24px;
+      margin: 0;
+      font-size: 17px;
+      color: var(--body);
+      line-height: 1.7;
+    }
+
+    .compare-col li {
+      margin-bottom: 12px;
+    }
+
+    .compare-col li:last-child {
+      margin-bottom: 0;
+    }
+
+    .compare-col.right .head {
+      color: var(--blue);
+    }
+
+    /* ============================ CHECKPOINTS ============================ */
+    .checkpoints {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .checkpoint {
+      background: var(--tint-2);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .checkpoint:hover {
+      background: #fff;
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+    }
+
+    .checkpoint .label {
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--blue);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .checkpoint .q {
+      margin: 16px 0 0;
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      color: var(--navy);
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    /* ============================ DISCLOSURE BANDS ============================ */
+    .disclosure {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .band {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      align-items: stretch;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s ease;
+    }
+
+    .band:hover {
+      transform: translateX(8px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .band .swatch {
+      padding: 24px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .band .swatch.red {
+      background: linear-gradient(135deg, var(--red), #991b1b);
+    }
+
+    .band .swatch.amber {
+      background: linear-gradient(135deg, var(--amber), #b45309);
+    }
+
+    .band .swatch.green {
+      background: linear-gradient(135deg, var(--green), #047857);
+    }
+
+    .band .body {
+      padding: 24px 32px;
+      background: #FFFFFF;
+    }
+
+    .band .body h5 {
+      margin: 0 0 10px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 20px;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .band .body p {
+      margin: 0;
+      font-size: 16px;
+      color: var(--body);
+      line-height: 1.6;
+    }
+
+    .band .body p .ex {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ============================ WORKSHEET ============================ */
+    .worksheet {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ws-row {
+      display: grid;
+      grid-template-columns: 48px 1fr 380px;
+      gap: 24px;
+      align-items: start;
+      padding: 24px 32px;
+      border-top: 1px solid var(--line-2);
+      transition: background 0.2s ease;
+    }
+
+    .ws-row:first-child {
+      border-top: none;
+    }
+
+    .ws-row:nth-child(even) {
+      background: var(--tint-2);
+    }
+
+    .ws-row:hover {
+      background: rgba(239, 246, 255, 0.5);
+    }
+
+    .ws-row .num {
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--blue);
+      padding-top: 2px;
+    }
+
+    .ws-row .q {
+      font-family: 'Inter', sans-serif;
+      font-size: 17px;
+      color: var(--navy);
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .ws-row .q .hint {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .ws-row .ex {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--blue-soft);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--body);
+      font-style: italic;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ws-row:nth-child(even) .ex {
+      background: #FFFFFF;
+    }
+
+    .ws-row .ex strong {
+      display: block;
+      font-style: normal;
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      color: var(--blue);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-weight: 800;
+    }
+
+    /* ============================ GLOSSARY ============================ */
+    .glossary {
+      background: var(--tint-2);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .glossary .title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--blue);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .glossary dl {
+      margin: 0;
+    }
+
+    .glossary dt {
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      color: var(--navy);
+      font-weight: 800;
+      margin-top: 20px;
+    }
+
+    .glossary dt:first-of-type {
+      margin-top: 0;
+    }
+
+    .glossary dd {
+      margin: 6px 0 0;
+      font-size: 16px;
+      color: var(--body);
+      line-height: 1.6;
+    }
+
+    /* ============================ SCENARIO CARD ============================ */
+    .scenario-card {
+      background: linear-gradient(135deg, #FFFFFF 0%, var(--tint-2) 100%);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 40px 48px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s ease;
+    }
+
+    .scenario-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .scenario-card .clock {
+      position: absolute;
+      right: 32px;
+      top: 32px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      color: var(--blue);
+      background: var(--tint);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+
+    .scenario-card h4 {
+      margin: 0 0 16px;
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(22px, 3vw, 28px);
+      color: var(--navy);
+      font-weight: 900;
+      padding-right: 120px;
+    }
+
+    .scenario-card p {
+      margin: 0 0 16px;
+      font-size: 18px;
+      color: var(--body);
+      line-height: 1.7;
+      max-width: 75ch;
+    }
+
+    .scenario-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ============================ SMALL TAGS ============================ */
+    .tag {
+      display: inline-block;
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--blue);
+      background: var(--tint);
+      padding: 6px 12px;
+      border-radius: 8px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .tag.amber {
+      color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .tag.red {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .tag.green {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .tag.dark {
+      color: #fff;
+      background: var(--navy);
+    }
+
+    /* ============================ WORD VIZ ============================ */
+    .word-viz {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 0 12px;
+      flex-wrap: wrap;
+    }
+
+    .word-viz .chunk {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 900;
+      color: var(--navy);
+      padding: 16px 24px;
+      border-radius: 16px;
+      line-height: 1;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease;
+    }
+
+    .word-viz .chunk:hover {
+      transform: scale(1.05);
+    }
+
+    .word-viz .chunk.a {
+      background: linear-gradient(135deg, var(--red-soft), #fca5a5);
+    }
+
+    .word-viz .chunk.b {
+      background: linear-gradient(135deg, var(--green-soft), #6ee7b7);
+    }
+
+    .word-viz .caption,
+    .caption {
+      text-align: center;
+      font-size: 15px;
+      color: var(--muted);
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    /* demo row on mental model page */
+    .demo-row {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .demo-box {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ============================ RESOURCES ============================ */
+    .resource-list {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .resource {
+      display: grid;
+      grid-template-columns: 48px 1fr 140px;
+      gap: 24px;
+      align-items: start;
+      padding: 28px 32px;
+      border-top: 1px solid var(--line-2);
+      transition: all 0.2s ease;
+    }
+
+    .resource:first-child {
+      border-top: none;
+    }
+
+    .resource:hover {
+      background: var(--tint-2);
+      padding-left: 40px;
+    }
+
+    .resource .num {
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--blue);
+    }
+
+    .resource .info h5 {
+      margin: 0 0 8px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .resource .info p {
+      margin: 0;
+      font-size: 15px;
+      color: var(--body);
+      line-height: 1.6;
+    }
+
+    .resource .kind {
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: right;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding-top: 4px;
+      font-weight: 700;
+    }
+
+    /* ============================ PRACTICE PROMPTS ============================ */
+    .practice-prompt {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 28px 32px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .practice-prompt:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--blue-soft);
+    }
+
+    .practice-prompt .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .practice-prompt .head h5 {
+      margin: 0;
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .practice-prompt .code {
+      background: var(--tint-2);
+      border-radius: 12px;
+      padding: 20px 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: var(--navy);
+      line-height: 1.7;
+      border: 1px solid var(--line);
+    }
+
+    /* ============================ CLOSING ============================ */
+    .closing {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 55%, var(--blue-2) 110%);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .closing .bg-x {
+      position: absolute;
+      right: -120px;
+      bottom: -120px;
+      width: 800px;
+      opacity: 0.05;
+      z-index: 0;
+    }
+
+    .closing .wrap {
+      position: relative;
+      z-index: 2;
+      padding-top: clamp(80px, 10vw, 140px);
+      padding-bottom: clamp(80px, 10vw, 140px);
+    }
+
+    .closing-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: clamp(48px, 8vw, 80px);
+    }
+
+    .closing-top img {
+      height: 40px;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+    }
+
+    .closing-top .pill {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+    }
+
+    .closing .eyebrow-w {
+      display: inline-block;
+      color: var(--blue-soft);
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .closing h2 {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(40px, 8vw, 80px);
+      line-height: 1.05;
+      margin: 0;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .closing h2 span {
+      background: linear-gradient(135deg, var(--blue-soft) 0%, #bae6fd 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .closing .lead {
+      font-size: clamp(18px, 2.5vw, 24px);
+      color: #cbd5e1;
+      line-height: 1.7;
+      margin-top: 32px;
+      max-width: 65ch;
+    }
+
+    .closing .grid {
+      margin-top: clamp(60px, 8vw, 100px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .closing .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 36px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .closing .card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .closing .card h4 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      color: var(--blue-soft);
+      margin: 0 0 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .closing .card .big {
+      font-family: 'Manrope', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    .closing .card p {
+      margin: 12px 0 0;
+      font-size: 16px;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+
+    .closing-footer {
+      margin-top: clamp(60px, 8vw, 100px);
+      padding-top: 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      color: #64748b;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .closing-footer strong {
+      color: #f8fafc;
+    }
+
+    /* ============================ BACK TO TOP ============================ */
+    .to-top {
+      position: fixed;
+      right: 32px;
+      bottom: 32px;
+      z-index: 90;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: none;
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 0;
+    }
+
+    .to-top.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .to-top:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 10px 25px rgba(30, 93, 255, 0.3);
+    }
+
+    .progress-ring {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring__circle {
+      transition: stroke-dashoffset 0.1s linear;
+      stroke-linecap: round;
+    }
+
+    /* ============================ ANIMATIONS (REVEAL) ============================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================ RESPONSIVE ============================ */
+    @media (max-width: 1200px) {
+      .contents {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .craft-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .demo-row {
+        grid-template-columns: 1fr;
+      }
+
+      .checkpoints {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+
+      .grid-2,
+      .grid-3,
+      .fact-grid,
+      .craft-grid,
+      .split-cols,
+      .compare-cols,
+      .checkpoints {
+        grid-template-columns: 1fr;
+      }
+
+      .ws-row {
+        grid-template-columns: 36px 1fr;
+        gap: 16px;
+      }
+
+      .ws-row .ex {
+        grid-column: 1 / -1;
+        margin-top: 10px;
+      }
+
+      .resource {
+        grid-template-columns: 36px 1fr;
+        gap: 16px;
+      }
+
+      .resource .kind {
+        grid-column: 2;
+        text-align: left;
+        padding-top: 0;
+      }
+
+      .closing .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-top .meta {
+        display: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .contents {
+        grid-template-columns: 1fr;
+      }
+
+      .band {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .band .swatch {
+        padding: 16px;
+      }
+
+      .scenario-card h4 {
+        padding-right: 0;
+      }
+
+      .scenario-card .clock {
+        position: static;
+        display: inline-block;
+        margin-bottom: 16px;
+      }
+
+      .hero-cover h1 {
+        font-size: clamp(48px, 12vw, 64px);
+      }
+
+      .sec-head .ghost {
+        display: none;
+      }
+
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================== NAV ============================== -->
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <img src="https://lh3.googleusercontent.com/d/1nL-SoS003QFr7bWObpiKMU1LssUdqw_6" alt="ElevateX">
+        <span class="tag">Day 01</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#mental-model">Mental Model</a>
+        <a href="#framework">4D Framework</a>
+        <a href="#craft">CRAFT-RIO</a>
+        <a href="#before-after">Before / After</a>
+        <a href="#context">Context Doc</a>
+        <a href="#modes">Two Modes</a>
+        <a href="#diligence">Diligence</a>
+        <a href="#practice">Practice</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- ============================== HERO / COVER ============================== -->
+  <section class="section hero-cover" id="top">
+    <div class="blob"
+      style="width:760px;height:760px;left:-300px;top:-400px;background:radial-gradient(circle, rgba(30,93,255,0.14), transparent 60%);">
+    </div>
+    <div class="blob"
+      style="width:560px;height:560px;right:-240px;bottom:-240px;background:radial-gradient(circle, rgba(30,93,255,0.10), transparent 60%);">
+    </div>
+
+    <div class="wrap">
+      <div class="hero-top">
+        <img src="https://lh3.googleusercontent.com/d/1nL-SoS003QFr7bWObpiKMU1LssUdqw_6" alt="ElevateX">
+        <div class="meta">
+          <strong>Student Handnote</strong><br>
+          Day 01 of 04 &nbsp;·&nbsp; Session Reference
+        </div>
+      </div>
+
+      <div class="eyebrow">Session One Reference Booklet</div>
+      <h1>Hidden Mechanics <span class="accent">of AI</span></h1>
+      <p class="lede">A short, practical handnote you can carry into every assignment, every chat, every all-nighter. By
+        the last section you will hold the mental model, the prompt anatomy, the personal context document, and the
+        ethics line that quietly separates a careful operator from a tired chatbot user.</p>
+
+      <div class="hero-foot" style="margin-bottom: 24px;">
+        <div class="foot-card">
+          <div class="foot-section instructor-side">
+            <div>
+              <span class="label">INSTRUCTOR</span>
+              <h3 class="title">Jubayer Ahmad</h3>
+            </div>
+            <div class="social-links">
+              <a href="https://www.jubayer.pro/" target="_blank" class="social-btn website">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                  </path>
+                </svg>
+                Website
+              </a>
+              <a href="https://www.linkedin.com/in/ahmadjubayer" target="_blank" class="social-btn linkedin">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                  <rect x="2" y="9" width="4" height="12"></rect>
+                  <circle cx="4" cy="4" r="2"></circle>
+                </svg>
+                LinkedIn
+              </a>
+            </div>
+          </div>
+          <div class="foot-divider"></div>
+          <div class="foot-section presenter-side">
+            <div>
+              <span class="label">PRESENTED BY</span>
+              <div class="foot-logo-wrap">
+                <img src="https://lh3.googleusercontent.com/d/1nL-SoS003QFr7bWObpiKMU1LssUdqw_6" alt="ElevateX Logo">
+              </div>
+            </div>
+            <div class="social-links">
+              <a href="https://facebook.com/elevatex.aipro" target="_blank" class="social-btn facebook">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                </svg>
+                facebook.com/elevatex.aipro
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="brief-card">
+        <h3>How to Use This Booklet</h3>
+        <p><strong>Read it once tonight.</strong> Underline the three things that surprised you. Then keep it open the
+          next time you sit down to write an essay, prepare for a viva, or revise a CV.</p>
+        <p><strong>Every section maps to one block from the session.</strong> The diagrams, the worked example for Riya,
+          the worksheet, the disclosure ladder, and the take-home prompts are all here, in the same order you saw them
+          in class.</p>
+      </div>
+
+      <div class="contents">
+        <a class="toc-card" href="#mental-model">
+          <div class="strip"></div>
+          <div class="num">01</div>
+          <h4>Mental Model</h4>
+          <p>How an LLM actually decides what to say next.</p>
+        </a>
+        <a class="toc-card" href="#framework">
+          <div class="strip"></div>
+          <div class="num">02</div>
+          <h4>The 4D Framework</h4>
+          <p>Delegation, Description, Discernment, Diligence.</p>
+        </a>
+        <a class="toc-card" href="#craft">
+          <div class="strip"></div>
+          <div class="num">03</div>
+          <h4>CRAFT-RIO</h4>
+          <p>Eight blocks every working prompt should contain.</p>
+        </a>
+        <a class="toc-card" href="#before-after">
+          <div class="strip"></div>
+          <div class="num">04</div>
+          <h4>Before and After</h4>
+          <p>Riya's lazy prompt, rebuilt for a different grade.</p>
+        </a>
+        <a class="toc-card" href="#context">
+          <div class="strip"></div>
+          <div class="num">05</div>
+          <h4>Context Document</h4>
+          <p>The single file every future chat should begin with.</p>
+        </a>
+        <a class="toc-card" href="#modes">
+          <div class="strip"></div>
+          <div class="num">06</div>
+          <h4>Hand Over or Sit Beside</h4>
+          <p>The line between automation and augmentation.</p>
+        </a>
+        <a class="toc-card" href="#diligence">
+          <div class="strip"></div>
+          <div class="num">07</div>
+          <h4>Diligence</h4>
+          <p>Hallucinations, the disclosure ladder, the defence sentence.</p>
+        </a>
+        <a class="toc-card" href="#practice">
+          <div class="strip"></div>
+          <div class="num">08</div>
+          <h4>Practice</h4>
+          <p>Three prompts to try tonight to keep growing.</p>
+        </a>
+      </div>
+
+
+    </div>
+  </section>
+
+
+  <!-- ============================== 01 · MENTAL MODEL ============================== -->
+  <section class="section plain" id="mental-model">
+    <div class="grid-bg"></div>
+    <div class="blob"
+      style="width:520px;height:520px;right:-220px;top:-160px;background:radial-gradient(circle, rgba(30,93,255,0.08), transparent 60%);">
+    </div>
+
+    <div class="wrap flow">
+      <div class="sec-head">
+        <div class="ghost">01</div>
+        <div class="kicker">Section 01 · Mental Model</div>
+        <h2>How the machine actually <span class="accent">decides what to say</span></h2>
+        <p class="subtitle">Before any prompting technique can help you, you need to know what is happening behind the
+          chat box. Skip this and every other section will sit on sand.</p>
+      </div>
+
+      <div class="scenario-card">
+        <div class="clock">11:04 PM</div>
+        <h4>Riya, the Case Study, and the Chat Box</h4>
+        <p>Riya Karim, third year BBA marketing student in Dhaka. A 1,500 word case study on Coca Cola's Share a Coke
+          campaign is due in ten hours. Her professor, Dr. Hasan, dislikes buzzwords and rewards specific evidence. She
+          types into ChatGPT: <em style="color:var(--blue);font-style:italic;">write me a 1500 word analysis of coca
+            cola share a coke campaign</em>. What comes back is fluent, polite, and forgettable. Why it failed is
+          everything you learn today.</p>
+      </div>
+
+      <div class="callout">
+        <span class="label">The One Sentence</span>
+        A large language model is a probability machine. Given everything written so far, it guesses the most likely
+        next chunk of text. Then the next. Until it decides to stop.
+      </div>
+
+      <div>
+        <h3 class="section-h"><span class="tag-inline">Four Facts</span><br>Carry these into every future chat</h3>
+        <div class="fact-grid">
+          <div class="fact-card">
+            <div class="num">FACT 01</div>
+            <h4>Tokens, not words</h4>
+            <p>The model reads text as chunks called tokens, not letters. This is why it can draft a polished essay yet
+              miscount the R's in <em>strawberry</em>.</p>
+          </div>
+          <div class="fact-card">
+            <div class="num">FACT 02</div>
+            <h4>No memory by default</h4>
+            <p>Every new chat starts blank. The model does not know your name, your subject, or yesterday's
+              conversation. Day 02 fixes this.</p>
+          </div>
+          <div class="fact-card">
+            <div class="num">FACT 03</div>
+            <h4>A knowledge cutoff</h4>
+            <p>Training stopped on a specific day in the past. Anything fresh, regional, or niche is suspect by default.
+            </p>
+          </div>
+          <div class="fact-card">
+            <div class="num">FACT 04</div>
+            <h4>Confidence is not correctness</h4>
+            <p>The model is built to sound certain. It will back wrong answers with perfect grammar. This is
+              hallucination. Section 07 covers it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-row">
+        <div class="demo-box">
+          <h3 class="section-h"><span class="tag-inline">Demo</span>Why strawberry breaks it</h3>
+          <p class="body-text">Ask: <strong>how many R's are in strawberry?</strong> Many versions answer two. There are
+            three. The model sees two chunks, not nine letters.</p>
+          <div class="word-viz">
+            <span class="chunk a">straw</span>
+            <span class="chunk b">berry</span>
+          </div>
+          <p class="caption">Two tokens. Counting letters inside them is not its default move.</p>
+        </div>
+        <div class="glossary">
+          <div class="title">Mini Glossary</div>
+          <dl>
+            <dt>Token</dt>
+            <dd>The chunk of text the model reads and writes at a time.</dd>
+            <dt>Context Window</dt>
+            <dd>How much text the model can hold in working memory at once.</dd>
+            <dt>Hallucination</dt>
+            <dd>Stating something false with full confidence, often with invented sources.</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== 02 · 4D FRAMEWORK ============================== -->
+  <section class="section tinted" id="framework">
+    <div class="blob"
+      style="width:560px;height:560px;left:-220px;bottom:-200px;background:radial-gradient(circle, rgba(30,93,255,0.08), transparent 60%);">
+    </div>
+
+    <div class="wrap flow">
+      <div class="sec-head">
+        <div class="ghost">02</div>
+        <div class="kicker">Section 02 · The Fluency Framework</div>
+        <h2>Four habits that separate <span class="accent">operators</span> from <span class="accent">users</span></h2>
+        <p class="subtitle">Most students use AI on instinct. The four habits below replace instinct with method. The
+          framework is published by Anthropic and is the spine of every other technique in this booklet.</p>
+      </div>
+
+      <div class="diamond-scroll-container">
+        <div class="diamond-wrap">
+          <svg class="lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <line x1="50" y1="14" x2="50" y2="42" stroke="#A8C3F7" stroke-width="0.4" stroke-dasharray="1 1"></line>
+            <line x1="50" y1="58" x2="50" y2="86" stroke="#A8C3F7" stroke-width="0.4" stroke-dasharray="1 1"></line>
+            <line x1="22" y1="50" x2="42" y2="50" stroke="#A8C3F7" stroke-width="0.4" stroke-dasharray="1 1"></line>
+            <line x1="58" y1="50" x2="78" y2="50" stroke="#A8C3F7" stroke-width="0.4" stroke-dasharray="1 1"></line>
+          </svg>
+          <div class="node top">
+            <h5>Delegation</h5>
+            <p>What should AI even do here?</p>
+          </div>
+          <div class="node left">
+            <h5>Description</h5>
+            <p>How do I tell it what I want?</p>
+          </div>
+          <div class="center-you">YOU</div>
+          <div class="node right">
+            <h5>Discernment</h5>
+            <p>How do I judge what came back?</p>
+          </div>
+          <div class="node bottom">
+            <h5>Diligence</h5>
+            <p>How do I own the final result?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 dcards">
+        <div class="fact-card">
+          <div class="num">D 01 &nbsp;·&nbsp; DELEGATION</div>
+          <h4>What to ask AI in the first place</h4>
+          <p><strong>Problem awareness.</strong> Name the actual goal. Not "write 1500 words" but "earn an A from Dr.
+            Hasan".</p>
+          <p><strong>Platform awareness.</strong> Pick the right tool. Claude, ChatGPT, Gemini, and Perplexity are not
+            interchangeable.</p>
+          <p><strong>Task split.</strong> Decide which parts you write, which parts AI drafts, and which parts you do
+            together.</p>
+        </div>
+        <div class="fact-card">
+          <div class="num">D 02 &nbsp;·&nbsp; DESCRIPTION</div>
+          <h4>How to tell it what you want</h4>
+          <p><strong>Product.</strong> Format, length, structure, tone of the output itself.</p>
+          <p><strong>Process.</strong> How the model should think. Step by step, with counter arguments, by drafting
+            three versions.</p>
+          <p><strong>Performance.</strong> How the model should behave. As a strict editor, a patient tutor, a tough
+            interviewer.</p>
+        </div>
+        <div class="fact-card">
+          <div class="num">D 03 &nbsp;·&nbsp; DISCERNMENT</div>
+          <h4>How to judge the answer</h4>
+          <p><strong>Product.</strong> Is the output accurate, specific, and in your voice?</p>
+          <p><strong>Process.</strong> Did the reasoning skip a step or accept a false premise?</p>
+          <p><strong>Performance.</strong> Did the model behave the way you asked, or did it default to bland?</p>
+        </div>
+        <div class="fact-card">
+          <div class="num">D 04 &nbsp;·&nbsp; DILIGENCE</div>
+          <h4>How to own the outcome</h4>
+          <p><strong>Creation.</strong> Was this the right tool, and was the chat appropriate to the task?</p>
+          <p><strong>Transparency.</strong> Did you disclose AI assistance where you should have?</p>
+          <p><strong>Deployment.</strong> Did you fact check every number, quote, and citation before you submitted?</p>
+        </div>
+      </div>
+
+      <div class="callout-dark">
+        <span class="label">Quiet Confession</span>
+        Most students are weakest at Description and Diligence. Description because they treat the chat like Google and
+        type three words. Diligence because they trust the first answer. Fix those two and your work changes inside a
+        week.
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== 03 · CRAFT-RIO ============================== -->
+  <section class="section plain" id="craft">
+    <div class="grid-bg"></div>
+    <div class="blob"
+      style="width:520px;height:520px;right:-220px;top:-150px;background:radial-gradient(circle, rgba(30,93,255,0.08), transparent 60%);">
+    </div>
+
+    <div class="wrap flow">
+      <div class="sec-head">
+        <div class="ghost">03</div>
+        <div class="kicker">Section 03 · Prompt Anatomy</div>
+        <h2>Eight building blocks of a <span class="accent">prompt that works</span></h2>
+        <p class="subtitle">A strong prompt is not longer. It is thicker. Every line earns its place. The acronym below
+          is a checklist, not a script. Use what fits the task and skip what does not.</p>
+      </div>
+
+      <div class="craft-grid">
+        <div class="craft-card">
+          <div class="letter">C</div>
+          <div class="name">Context</div>
+          <div class="desc">Who you are, what the situation is, what came before. Without this the model defaults to
+            generic.</div>
+        </div>
+        <div class="craft-card">
+          <div class="letter">R</div>
+          <div class="name">Role</div>
+          <div class="desc">Who the model should be while answering. Strict editor, patient tutor, sharp business
+            journalist.</div>
+        </div>
+        <div class="craft-card">
+          <div class="letter">A</div>
+          <div class="name">Action</div>
+          <div class="desc">The single verb. Outline. Critique. Translate. Summarise. Do one thing well, not five things
+            poorly.</div>
+        </div>
+        <div class="craft-card">
+          <div class="letter">F</div>
+          <div class="name">Format</div>
+          <div class="desc">Structure of the output. Sections, headings, length, bullets, table, list of three.</div>
+        </div>
+        <div class="craft-card">
+          <div class="letter">T</div>
+          <div class="name">Tone</div>
+          <div class="desc">Voice and register. Direct, analytical, allergic to jargon, written like a journalist not a
+            textbook.</div>
+        </div>
+        <div class="craft-card">
+          <div class="letter">R</div>
+          <div class="name">Reasoning</div>
+          <div class="desc">How the model should think. Step by step, list three options, argue against itself, then
+            choose.</div>
+        </div>
+        <div class="craft-card">
+          <div class="letter">I</div>
+          <div class="name">Input</div>
+          <div class="desc">Reference material you provide. Notes, the paragraph you wrote, the rubric, the job
+            description.</div>
+        </div>
+        <div class="craft-card">
+          <div class="letter">O</div>
+          <div class="name">Output Rules</div>
+          <div class="desc">Hard limits. Banned phrases, claims marked unverified, end with three sharpening questions.
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="section-h"><span class="tag-inline">Skeleton</span><br>Copy this template and adapt it to any task
+        </h3>
+        <div class="prompt-block"><span class="label">CRAFT-RIO Skeleton</span>[<span class="token">CONTEXT</span>] I am
+          ... . The situation is ... . What came before is ... .
+          [<span class="token">ROLE</span>] Act as ... with experience in ... .
+          [<span class="token">ACTION</span>] Do exactly one thing: ... . Do not ... yet.
+          [<span class="token">FORMAT</span>] Structure the answer as: ... .
+          [<span class="token">TONE</span>] Write like ... . Avoid sounding like ... .
+          [<span class="token">REASONING</span>] Before answering, think step by step:
+          1. ... 2. ... 3. ...
+          [<span class="token">INPUT</span>] Here is the material you should use:
+          """ ... """
+          [<span class="token">OUTPUT RULES</span>] Do not use these phrases: ... . Mark any claim
+          you are unsure about with [VERIFY]. End by asking me three
+          sharpening questions before you draft anything longer.</div>
+      </div>
+
+      <div class="callout">
+        <span class="label">Rule of Thumb</span>
+        A good prompt reads like a job advertisement. Who you want. What they should do. With which materials. What the
+        output should look like. What is forbidden. If your prompt cannot fill out that ad, you are not ready to hit
+        enter.
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== 04 · BEFORE & AFTER ============================== -->
+  <section class="section tinted" id="before-after">
+    <div class="blob"
+      style="width:560px;height:560px;left:-220px;top:-180px;background:radial-gradient(circle, rgba(30,93,255,0.07), transparent 60%);">
+    </div>
+
+    <div class="wrap flow">
+      <div class="sec-head">
+        <div class="ghost">04</div>
+        <div class="kicker">Section 04 · Worked Example</div>
+        <h2>Same question. Same AI. <span class="accent">Different worlds.</span></h2>
+        <p class="subtitle">Two prompts written five minutes apart, into the same chat box. One pays rent on every line.
+          The other types as if Google were on the other side. Compare the outputs and the lesson is permanent.</p>
+      </div>
+
+      <div class="split-cols">
+        <div class="split-col before">
+          <span class="col-tag">Before</span>
+          <h4>The lazy prompt</h4>
+          <div class="prompt-block-light" style="margin-bottom:16px;"><span class="label">What Riya Typed at 11:04
+              PM</span>write me a 1500 word analysis of
+            coca cola share a coke campaign</div>
+          <div class="output-block bland">
+            "Coca Cola's Share a Coke campaign was a remarkably successful global marketing initiative that effectively
+            used personalisation to engage consumers in today's fast paced beverage industry. By replacing the iconic
+            logo with popular first names, the company built emotional resonance and tapped into the universal human
+            desire for individual recognition..."
+          </div>
+          <p class="body-text">Result: fifteen hundred words of correct, polite, forgettable text. Dr. Hasan circles
+            four buzzwords on page one and writes a B at the top.</p>
+        </div>
+
+        <div class="split-col after">
+          <span class="col-tag">After</span>
+          <h4>The CRAFT-RIO prompt</h4>
+          <div class="prompt-block" style="margin-bottom:16px;"><span class="label">What Riya Rebuilt at 11:11
+              PM</span>[<span class="token">CONTEXT</span>] I am a 3rd year BBA marketing student in
+            Dhaka. Dr. Hasan dislikes generic buzzwords and
+            rewards specific evidence, named theories, and
+            unconventional angles.
+            [<span class="token">ROLE</span>] Act as a brand strategy lecturer who has
+            graded 500 student essays.
+            [<span class="token">ACTION</span>] Build an outline for an essay on Coca
+            Cola's Share a Coke campaign (Australia 2011,
+            global 2014). Do not write the essay yet.
+            [<span class="token">FORMAT</span>] Thesis sentence + 3 sections with
+            sub claims + counter argument + open conclusion.
+            [<span class="token">TONE</span>] Sharp business journalist, no jargon.
+            [<span class="token">REASONING</span>] Before writing, decide:
+            1. What makes it academically interesting?
+            2. What is the strongest counter argument?
+            3. Which theory frames it best (Kotler, Aaker,
+            Holt, Sharp) and why?
+            [<span class="token">OUTPUT RULES</span>] No "synergy", "leverage",
+            "resonance". Mark uncertain claims with [VERIFY].
+            End by asking me 3 sharpening questions.</div>
+          <div class="output-block">
+            "Thesis: Share a Coke succeeded not because of personalisation but because it converted a private bottle
+            into a public social object. Section 1: identity transfer ... Section 2: scarcity engineering (150 names, 18
+            million Australians) ... Counter argument: Sharp's How Brands Grow predicts ..."
+          </div>
+          <p class="body-text">Result: a sharp scaffold with three sub claims, nine evidence hooks, a counter argument,
+            and three questions Riya has to answer herself. She still writes the essay. The grade rises a full letter.
+          </p>
+        </div>
+      </div>
+
+      <div class="callout-dark">
+        <span class="label">The Lesson</span>
+        The AI did not write Riya's essay. Riya still wrote it. The AI was the most expensive private tutor in history,
+        and it was free. The difference between the two outputs sitting above is the difference between a chatbot user
+        and an operator. The gap is your prompt.
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== 05 · LEARNING CONTEXT DOCUMENT ============================== -->
+  <section class="section plain" id="context">
+    <div class="grid-bg"></div>
+    <div class="blob"
+      style="width:520px;height:520px;right:-220px;bottom:-180px;background:radial-gradient(circle, rgba(30,93,255,0.07), transparent 60%);">
+    </div>
+
+    <div class="wrap flow">
+      <div class="sec-head">
+        <div class="ghost">05</div>
+        <div class="kicker">Section 05 · Your Homepage</div>
+        <h2>Write this once. <span class="accent">Paste it forever.</span></h2>
+        <p class="subtitle">The Learning Context Document is one short paragraph about you that you keep in a note, a
+          Google Doc, or your phone. Every new chat begins with it. From that point on, the model knows your major, your
+          professor's pet peeves, and the voice you are trying to develop.</p>
+      </div>
+
+      <div class="worksheet">
+        <div class="ws-row">
+          <div class="num">01</div>
+          <div class="q">Who I am, in one sentence.<span class="hint">Age, year, university, one thing you are working
+              toward.</span></div>
+          <div class="ex"><strong>Riya's Answer</strong>Riya Karim, 21, third year BBA student in Dhaka, aiming at FMCG
+            brand management.</div>
+        </div>
+        <div class="ws-row">
+          <div class="num">02</div>
+          <div class="q">What I study and where.<span class="hint">Major, expected graduation.</span></div>
+          <div class="ex"><strong>Riya's Answer</strong>BBA, Marketing major, graduating June 2027. Strong in Consumer
+            Behaviour, weak in Statistics.</div>
+        </div>
+        <div class="ws-row">
+          <div class="num">03</div>
+          <div class="q">My career direction, even if it is a rough guess.<span class="hint">One or two target roles or
+              industries.</span></div>
+          <div class="ex"><strong>Riya's Answer</strong>Brand management at Unilever Bangladesh or BAT, then regional
+            roles in South Asia.</div>
+        </div>
+        <div class="ws-row">
+          <div class="num">04</div>
+          <div class="q">My language background and how it shapes my writing.<span class="hint">Native language, writing
+              habits to fix.</span></div>
+          <div class="ex"><strong>Riya's Answer</strong>Bangla native. English defaults to long sentences and formal
+            words. Help me cut both.</div>
+        </div>
+        <div class="ws-row">
+          <div class="num">05</div>
+          <div class="q">The writing voice I am developing.<span class="hint">Three adjectives that describe your target
+              voice.</span></div>
+          <div class="ex"><strong>Riya's Answer</strong>Specific. Slightly journalistic. Never corporate.</div>
+        </div>
+        <div class="ws-row">
+          <div class="num">06</div>
+          <div class="q">What my professors penalise.<span class="hint">Three concrete things, not vague
+              feelings.</span></div>
+          <div class="ex"><strong>Riya's Answer</strong>Buzzwords. Claims with no numbers. Conclusions that repeat the
+            intro.</div>
+        </div>
+        <div class="ws-row">
+          <div class="num">07</div>
+          <div class="q">What my professors reward.<span class="hint">Three concrete habits you have seen earn high
+              marks.</span></div>
+          <div class="ex"><strong>Riya's Answer</strong>Named frameworks. Local plus global examples. Real counter
+            arguments.</div>
+        </div>
+        <div class="ws-row">
+          <div class="num">08</div>
+          <div class="q">My personal line on AI use, in one sentence.<span class="hint">What you will and will not let
+              AI do for you.</span></div>
+          <div class="ex"><strong>Riya's Answer</strong>AI for outlines, critique, and fact checking. The final words
+            must be mine.</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="label">Where to Keep It</span>
+        Paste this paragraph into ChatGPT Custom Instructions, Claude Project Instructions, or Gemini Saved Info. On a
+        free account, keep it in a Notes app and paste at the top of every new chat. Update once a semester.
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== 06 · AUTOMATION VS AUGMENTATION ============================== -->
+  <section class="section tinted" id="modes">
+    <div class="blob"
+      style="width:560px;height:560px;right:-220px;top:-160px;background:radial-gradient(circle, rgba(30,93,255,0.07), transparent 60%);">
+    </div>
+
+    <div class="wrap flow">
+      <div class="sec-head">
+        <div class="ghost">06</div>
+        <div class="kicker">Section 06 · Two Modes</div>
+        <h2>Hand it over, <span class="accent">or sit beside it</span></h2>
+        <p class="subtitle">Two modes. Pick the wrong one and AI either wastes your time or quietly takes credit for the
+          part of your degree you were supposed to develop yourself.</p>
+      </div>
+
+      <div class="compare-cols">
+        <div class="compare-col left">
+          <div class="head">Automation <span class="tag">AI does it</span></div>
+          <ul>
+            <li>Stakes are low and the cost of a small mistake is small.</li>
+            <li>The task is repetitive, mechanical, or pattern based.</li>
+            <li>You can verify the output in under a minute.</li>
+            <li>Your voice is not the point of the work.</li>
+            <li>You would have outsourced this to an intern if you had one.</li>
+          </ul>
+        </div>
+        <div class="compare-col right">
+          <div class="head">Augmentation <span class="tag dark">AI sits beside you</span></div>
+          <ul>
+            <li>Stakes are high or the work counts toward a grade.</li>
+            <li>Original thinking, judgement, or argument is involved.</li>
+            <li>Your voice and reasoning are the point of the work.</li>
+            <li>You want to learn the topic, not just produce the deliverable.</li>
+            <li>A teacher or employer will ask you to defend it later.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="section-h"><span class="tag-inline">Drill</span><br>How to classify common student tasks</h3>
+        <div class="table-scroll">
+          <table class="task-table">
+            <thead>
+              <tr>
+                <th style="width:55%">The Task</th>
+                <th>Verdict</th>
+                <th>Why</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Polite email to reschedule a dentist appointment</td>
+                <td><span class="verdict v-auto">Automate</span></td>
+                <td>No voice required, low stakes.</td>
+              </tr>
+              <tr>
+                <td>The opening paragraph of a case study you will be graded on</td>
+                <td><span class="verdict v-aug">Augment</span></td>
+                <td>Voice is the point. Have AI critique, not draft.</td>
+              </tr>
+              <tr>
+                <td>Summarising a 40 page lecture PDF for revision</td>
+                <td><span class="verdict v-auto">Automate</span></td>
+                <td>Pattern work. Spot check five claims afterwards.</td>
+              </tr>
+              <tr>
+                <td>Choosing the thesis of your essay</td>
+                <td><span class="verdict v-aug">Augment</span></td>
+                <td>This is the thinking. Owning the thesis is owning the grade.</td>
+              </tr>
+              <tr>
+                <td>Translating Bangla notes into clean English</td>
+                <td><span class="verdict v-auto">Automate</span></td>
+                <td>Mechanical, easy to verify.</td>
+              </tr>
+              <tr>
+                <td>Generating 50 flashcards from a chapter</td>
+                <td><span class="verdict v-auto">Automate</span></td>
+                <td>Bulk task. Verify a random five.</td>
+              </tr>
+              <tr>
+                <td>Replying to a sensitive message from a close friend</td>
+                <td><span class="verdict v-none">Neither</span></td>
+                <td>Stay out. Real relationships need full presence.</td>
+              </tr>
+              <tr>
+                <td>Writing a eulogy for your grandmother</td>
+                <td><span class="verdict v-never">Never</span></td>
+                <td>Some work is sacred. It is not AI's to touch.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="section-h"><span class="tag-inline">Before You Submit</span><br>Three checkpoints to clear, every
+          time
+        </h3>
+        <div class="checkpoints">
+          <div class="checkpoint">
+            <div class="label">Truth Check</div>
+            <div class="q">Is anything in here factually wrong? Did I verify every number, quote, and citation?</div>
+          </div>
+          <div class="checkpoint">
+            <div class="label">Voice Check</div>
+            <div class="q">Does this sound like me, or does it sound like AI doing an impression of a polite stranger?
+            </div>
+          </div>
+          <div class="checkpoint">
+            <div class="label">Stake Check</div>
+            <div class="q">If my professor, boss, or parent asked me to defend any sentence right now, could I?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== 07 · DILIGENCE + DISCLOSURE ============================== -->
+  <section class="section plain" id="diligence">
+    <div class="grid-bg"></div>
+    <div class="blob"
+      style="width:560px;height:560px;left:-220px;bottom:-180px;background:radial-gradient(circle, rgba(30,93,255,0.07), transparent 60%);">
+    </div>
+
+    <div class="wrap flow">
+      <div class="sec-head">
+        <div class="ghost">07</div>
+        <div class="kicker">Section 07 · Diligence</div>
+        <h2>The most dangerous thing <span class="accent">AI does</span></h2>
+        <p class="subtitle">It is not the obvious wrong answer. It is the confidently wrong answer, written in perfect
+          grammar, with sources that sound real. Catching it is a skill, and the skill is built on three habits.</p>
+      </div>
+
+      <div>
+        <h3 class="section-h"><span class="tag-inline">Hallucination</span><br>Three situations where the model invents
+          the
+          most</h3>
+        <div class="grid-3">
+          <div class="fact-card">
+            <div class="num">TRIGGER 01</div>
+            <h4>Citations and sources</h4>
+            <p>Papers, page numbers, book quotes, DOIs. The model writes plausible authors and journals that do not
+              exist. Always verify before citing.</p>
+          </div>
+          <div class="fact-card">
+            <div class="num">TRIGGER 02</div>
+            <h4>After the cutoff date</h4>
+            <p>Recent news, fresh product launches, last week's prices. The model improvises confidently. Use a web
+              search tool instead.</p>
+          </div>
+          <div class="fact-card">
+            <div class="num">TRIGGER 03</div>
+            <h4>Niche or local knowledge</h4>
+            <p>Small companies, regional events, Bangladeshi figures, lesser known places. The model leans on guesswork.
+              Treat output as a draft until confirmed.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="section-h"><span class="tag-inline">Disclosure</span><br>When to mention AI in your work</h3>
+        <div class="disclosure">
+          <div class="band">
+            <div class="swatch red">Red</div>
+            <div class="body">
+              <h5>Do not submit as your own work</h5>
+              <p>AI wrote the essay, the cover letter, or the reflection. You lightly edited. This is academic
+                dishonesty in almost every policy worldwide. <span class="ex">Example: you typed "write me 1500 words"
+                  and submitted what came back with three words changed.</span></p>
+            </div>
+          </div>
+          <div class="band">
+            <div class="swatch amber">Amber</div>
+            <div class="body">
+              <h5>Heavily AI assisted, so disclose clearly</h5>
+              <p>You did the thinking. AI helped with outline, brainstorming, structure, or chunks of drafting. Add a
+                short note in a footnote or acknowledgement. <span class="ex">Example: "Outline developed with Claude;
+                  all writing my own. Conclusion drafted in collaboration and revised three times."</span></p>
+            </div>
+          </div>
+          <div class="band">
+            <div class="swatch green">Green</div>
+            <div class="body">
+              <h5>Lightly AI assisted, no disclosure needed</h5>
+              <p>AI helped the way a thesaurus, spell checker, or tutor would. The thinking and writing are unmistakably
+                yours. <span class="ex">Examples: a synonym suggestion, a grammar correction, an explanation of a
+                  concept that you then wrote up in your own words.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout-dark">
+        <span class="label">The Eleven Word Test</span>
+        If I had to defend every line of this in front of the person who graded it, could I? If yes, submit. If no, you
+        are not the human in the loop, you are the rubber stamp.
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== 08 · PRACTICE ============================== -->
+  <section class="section tinted" id="practice">
+    <div class="blob"
+      style="width:560px;height:560px;right:-220px;top:-160px;background:radial-gradient(circle, rgba(30,93,255,0.07), transparent 60%);">
+    </div>
+
+    <div class="wrap flow">
+      <div class="sec-head">
+        <div class="ghost">08</div>
+        <div class="kicker">Section 08 · Practice</div>
+        <h2>Tonight's practice. <span class="accent">Tomorrow's habit.</span></h2>
+        <p class="subtitle">Read everything in this booklet twice and you still will not learn it. Try the three
+          exercises below today, and you will.</p>
+      </div>
+
+      <div>
+        <h3 class="section-h"><span class="tag-inline">Three Prompts</span><br>Try one of these before you sleep tonight
+        </h3>
+        <div class="grid-3">
+          <div class="practice-prompt">
+            <div class="head">
+              <h5>01 · Rebuild an old chat</h5><span class="tag">10 min</span>
+            </div>
+            <div class="code">Open ChatGPT or Claude. Find a lazy prompt you typed in the last two weeks. Using the
+              CRAFT-RIO skeleton in Section 03, rebuild it. Run both. Compare the two outputs.</div>
+          </div>
+          <div class="practice-prompt">
+            <div class="head">
+              <h5>02 · Install your context</h5><span class="tag">5 min</span>
+            </div>
+            <div class="code">Type out the eight answers from Section 05 into a single note on your phone. Paste it at
+              the top of three new chats tomorrow. Notice how the answers change.</div>
+          </div>
+          <div class="practice-prompt">
+            <div class="head">
+              <h5>03 · Catch a confident lie</h5><span class="tag amber">15 min</span>
+            </div>
+            <div class="code">Ask the model: "Give me three peer reviewed papers about [your topic] with authors,
+              journals, and DOIs." Google the first one. If nothing comes up, you have caught your first hallucination.
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="callout">
+        <span class="label">For Day 02</span>
+        Bring your worst subject from this semester, your filled in context document from Section 05, and the funniest
+        hallucination you can find tonight. We open the next session by making the worst subject your favourite. See you
+        there.
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================== CLOSING ============================== -->
+  <section class="section closing" id="closing">
+    <img src="./Day-1-Handnote 2_files/logo-x.png" alt="" class="bg-x">
+    <div class="wrap">
+      <div class="closing-top">
+        <img src="https://lh3.googleusercontent.com/d/17pm8zwnt1HWlT6f9WNKko5Taw5SUvQD-" alt="ElevateX">
+        <div class="pill">Day 01 of 04</div>
+      </div>
+
+      <div class="eyebrow-w">A Note to Keep</div>
+      <h2>From chatbot tourist<br>to <span>careful operator.</span></h2>
+      <p class="lead">You came in typing seven words and hitting enter. You leave with a mental model, a framework, an
+        anatomy, a context document, two checkpoint habits, a disclosure ladder, and a sentence you can defend. That is
+        the whole of Day 01. Keep this booklet near your laptop. Open it every time the next prompt feels lazy.</p>
+
+      <div class="grid">
+        <div class="card">
+          <h4>What You Carry Forward</h4>
+          <div class="big">The five things to remember</div>
+          <p>Tokens not words. Four habits, not four tools. Eight blocks, not three words. One context paragraph, pasted
+            forever. One sentence: can I defend every line of this?</p>
+        </div>
+        <div class="card">
+          <h4>What Comes Next</h4>
+          <div class="big">Day 02 &nbsp;·&nbsp; AI as Your Study Partner</div>
+          <p>We make the chat remember you. We turn it into a tutor for your hardest subject. We build a study system
+            that survives across semesters, not just one essay.</p>
+        </div>
+        <div class="card">
+          <h4>Community</h4>
+          <div class="big"><a href="https://facebook.com/elevatex.aipro" target="_blank"
+              style="color: inherit; text-decoration: none;">facebook.com/elevatex.aipro</a></div>
+          <p>Live sessions, free prompt libraries, and announcements about open enrolments for upcoming cohorts.</p>
+        </div>
+        <div class="card">
+          <h4>Instructor</h4>
+          <div class="big">Jubayer Ahmad</div>
+          <p>For any problems, further queries, or to arrange future sessions, feel free to reach out directly via
+            website or LinkedIn.</p>
+          <div class="social-links" style="margin-top: 16px; justify-content: flex-start;">
+            <style>
+              .closing .card .social-btn.white-theme {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 8px 14px;
+                border-radius: 10px;
+                font-size: 13px;
+                font-weight: 600;
+                font-family: 'Manrope', sans-serif;
+                text-decoration: none;
+                background: rgba(255, 255, 255, 0.1);
+                color: rgba(255, 255, 255, 0.9);
+                transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+              }
+
+              .closing .card .social-btn.white-theme:hover {
+                background: #ffffff;
+                color: #000000;
+                transform: translateY(-1px);
+              }
+            </style>
+            <a href="https://www.jubayer.pro/" target="_blank" class="social-btn white-theme">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                </path>
+              </svg>
+              Website
+            </a>
+            <a href="https://www.linkedin.com/in/ahmadjubayer" target="_blank" class="social-btn white-theme">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                <rect x="2" y="9" width="4" height="12"></rect>
+                <circle cx="4" cy="4" r="2"></circle>
+              </svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+        <div class="card">
+          <h4>Contact</h4>
+          <div class="big"><a href="mailto:mail.elevatex@gmail.com"
+              style="color: inherit; text-decoration: none;">mail.elevatex@gmail.com</a></div>
+          <p>For workshop bookings, partnerships, custom cohorts, and speaker invitations across campuses, clubs, and
+            faculties.</p>
+        </div>
+      </div>
+
+
+
+      <div class="closing-footer">
+        <div>© ElevateX <span style="opacity:0.6;">&nbsp;·&nbsp;</span> <strong>Skills · AI · Growth</strong></div>
+        <div>Prompt to Productive <span style="opacity:0.6;">&nbsp;·&nbsp;</span> <strong>Day 01 Handnote</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <button class="to-top" id="toTop" aria-label="Back to top">
+    <svg class="progress-ring" viewBox="0 0 56 56">
+      <circle class="progress-ring__circle" stroke="var(--blue)" stroke-width="4" fill="transparent" r="24" cx="28"
+        cy="28" />
+    </svg>
+    <img src="https://lh3.googleusercontent.com/d/1nqionZa55c1fCiZYjKV1vjvHE2xk55hV" alt="Top"
+      style="width: 16px; height: 16px; position: absolute;">
+  </button>
+
+  <script>
+
+    (function () {
+      var btn = document.getElementById('toTop');
+      var circle = document.querySelector('.progress-ring__circle');
+      var radius = circle ? circle.r.baseVal.value : 24;
+      var circumference = radius * 2 * Math.PI;
+
+      if (circle) {
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        circle.style.strokeDashoffset = `${circumference}`;
+      }
+
+      var onScroll = function () {
+        if (window.scrollY > 600) { btn.classList.add('show'); }
+        else { btn.classList.remove('show'); }
+
+        if (circle) {
+          var scrollHeight = Math.max(
+            document.body.scrollHeight, document.documentElement.scrollHeight,
+            document.body.offsetHeight, document.documentElement.offsetHeight,
+            document.body.clientHeight, document.documentElement.clientHeight
+          );
+          var docHeight = Math.max(1, scrollHeight - document.documentElement.clientHeight);
+          var scrollPercent = window.scrollY / docHeight;
+          var offset = circumference - (scrollPercent * circumference);
+          circle.style.strokeDashoffset = offset;
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      btn.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // Responsive 4D Diamond scaling keeping aspect ratio intact
+      function adjustDiamondScale() {
+        var container = document.querySelector('.diamond-scroll-container');
+        var wrap = document.querySelector('.diamond-wrap');
+        if (!container || !wrap) return;
+
+        var containerWidth = container.getBoundingClientRect().width;
+        var baseWidth = 800;
+        var baseHeight = 500;
+
+        if (containerWidth < baseWidth && containerWidth > 0) {
+          var scale = containerWidth / baseWidth;
+          wrap.style.transform = 'scale(' + scale + ')';
+          wrap.style.minWidth = baseWidth + 'px';
+          wrap.style.width = baseWidth + 'px';
+          container.style.height = (baseHeight * scale) + 'px';
+        } else {
+          wrap.style.transform = '';
+          wrap.style.minWidth = '';
+          wrap.style.width = '';
+          container.style.height = '';
+        }
+      }
+
+      // Responsive Table scaling
+      function adjustTableScale() {
+        var container = document.querySelector('.table-scroll');
+        var wrap = document.querySelector('.task-table');
+        if (!container || !wrap) return;
+
+        // Reset to get true height
+        wrap.style.transform = '';
+        wrap.style.width = '';
+        wrap.style.minWidth = '';
+        container.style.height = '';
+
+        var containerWidth = container.getBoundingClientRect().width;
+        var baseWidth = 540;
+
+        if (containerWidth < baseWidth && containerWidth > 0) {
+          wrap.style.width = baseWidth + 'px';
+          wrap.style.minWidth = baseWidth + 'px';
+          var baseHeight = wrap.offsetHeight;
+          var scale = containerWidth / baseWidth;
+
+          wrap.style.transform = 'scale(' + scale + ')';
+          container.style.height = (baseHeight * scale) + 'px';
+        }
+      }
+
+      window.addEventListener('resize', function () {
+        adjustDiamondScale();
+        adjustTableScale();
+      });
+      window.addEventListener('load', function () {
+        adjustDiamondScale();
+        adjustTableScale();
+      });
+      adjustDiamondScale();
+      adjustTableScale();
+      setTimeout(function () {
+        adjustDiamondScale();
+        adjustTableScale();
+      }, 150);
+
+      // Add Intersection Observer for reveal animations
+      if ('IntersectionObserver' in window) {
+        var observerOptions = {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.1
+        };
+        var observer = new IntersectionObserver(function (entries, observer) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('active');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, observerOptions);
+
+        var revealElements = document.querySelectorAll('.sec-head, .scenario-card, .fact-card, .diamond-scroll-container, .craft-card, .split-col, .worksheet, .glossary, .resource, .practice-prompt, .card, .band, .demo-box');
+        revealElements.forEach(function (el) {
+          el.classList.add('reveal');
+          observer.observe(el);
+        });
+      }
+    })();
+
+  </script>
+
+</body>
+
+</html>

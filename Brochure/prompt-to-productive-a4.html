@@ -1,0 +1,1085 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prompt to Productive | ElevateX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" media="all" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@500;600;700;800&display=swap"></noscript>
+<style>
+  :root {
+    --navy: #0B1437;
+    --navy-2: #14224F;
+    --ink: #1A2348;
+    --body: #2A3354;
+    --muted: #5A6485;
+    --line: #E3E9F6;
+    --blue: #1E5DFF;
+    --blue-2: #0A3CC2;
+    --blue-soft: #4A8FFF;
+    --tint: #EAF1FF;
+    --tint-2: #F4F8FF;
+    --bg: #FFFFFF;
+    --accent: #FFD93D;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--ink);
+    background: #ECEEF3;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  /* Strict A4 sheet: exactly 210mm x 297mm, content clipped if it overflows */
+  .page {
+    width: 210mm;
+    height: 297mm;
+    background: var(--bg);
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+  }
+  .page:last-of-type { page-break-after: auto; }
+
+  /* Decorative shapes */
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(0.5px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .dots {
+    position: absolute;
+    display: grid;
+    grid-template-columns: repeat(6, 4px);
+    grid-template-rows: repeat(6, 4px);
+    gap: 6px;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .dots span {
+    display: block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--blue-soft);
+  }
+
+  /* ============ COVER ============ */
+  .cover {
+    background:
+      radial-gradient(120% 80% at 110% -10%, rgba(30,93,255,0.18), transparent 55%),
+      radial-gradient(90% 60% at -10% 110%, rgba(30,93,255,0.18), transparent 55%),
+      linear-gradient(180deg, #FFFFFF 0%, #F6F9FF 100%);
+  }
+  .cover .wave {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .cover .top-bar {
+    position: relative;
+    z-index: 2;
+    padding: 14mm 16mm 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .cover .top-bar .brand img {
+    height: 11mm;
+    display: block;
+  }
+  .cover .top-bar .meta {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-size: 9pt;
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-align: right;
+    line-height: 1.5;
+  }
+  .cover .top-bar .meta strong {
+    color: var(--navy);
+    font-weight: 700;
+  }
+
+  .cover-hero {
+    position: relative;
+    z-index: 2;
+    padding: 8mm 16mm 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    background: var(--tint);
+    border-radius: 999px;
+    width: fit-content;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+  }
+
+  .cover h1 {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-size: 58pt;
+    line-height: 0.98;
+    color: var(--navy);
+    margin: 12px 0 4px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .cover h1 .accent {
+    background: linear-gradient(135deg, #1E5DFF 0%, #0A3CC2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+    padding-right: 0.08em;
+    margin-right: -0.04em;
+  }
+  .cover .lede {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13pt;
+    color: var(--body);
+    font-weight: 500;
+    margin: 4px 0 0;
+    max-width: 150mm;
+    line-height: 1.45;
+  }
+  .cover .lede em {
+    color: var(--blue);
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  .cover .brief-card {
+    margin-top: 10mm;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 9mm 10mm;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(11,20,55,0.06);
+  }
+  .cover .brief-card::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 14mm;
+    bottom: 14mm;
+    width: 4px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #1E5DFF, #0A3CC2);
+  }
+  .cover .brief-card h3 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 10pt;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--blue);
+    margin: 0 0 6px;
+    font-weight: 700;
+  }
+  .cover .brief-card p {
+    font-size: 10.5pt;
+    line-height: 1.55;
+    color: var(--body);
+    margin: 0 0 8px;
+  }
+  .cover .brief-card p:last-child { margin-bottom: 0; }
+
+  .cover .pillars {
+    margin-top: 7mm;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6mm;
+  }
+  .pillar {
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 6mm 5mm;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+  .pillar .num {
+    font-family: 'Manrope', sans-serif;
+    font-size: 9pt;
+    font-weight: 800;
+    color: var(--blue);
+    letter-spacing: 0.18em;
+  }
+  .pillar h4 {
+    margin: 4px 0 4px;
+    font-size: 11pt;
+    color: var(--navy);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .pillar p {
+    font-size: 8.8pt;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.4;
+  }
+  .pillar .strip {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1E5DFF, #4A8FFF);
+  }
+
+  .cover-footer {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+    padding: 10mm 16mm 12mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 10mm;
+  }
+  .cover-footer .signature {
+    font-family: 'Manrope', sans-serif;
+    font-size: 9pt;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    line-height: 1.5;
+  }
+  .cover-footer .signature strong {
+    color: var(--navy);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 8.5pt;
+  }
+  .cover-footer .cta-stack {
+    text-align: right;
+  }
+  .cover-footer .cta-stack .label {
+    font-family: 'Manrope', sans-serif;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--muted);
+  }
+  .cover-footer .cta-stack .value {
+    font-family: 'Manrope', sans-serif;
+    font-size: 11pt;
+    color: var(--navy);
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  /* ============ DAY PAGES ============ */
+  .day-page {
+    background:
+      radial-gradient(80% 50% at 100% 0%, rgba(30,93,255,0.06), transparent 60%),
+      #FFFFFF;
+  }
+  .day-header {
+    position: relative;
+    z-index: 2;
+    padding: 11mm 16mm 5mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .day-header .left {
+    display: flex;
+    align-items: center;
+    gap: 5mm;
+  }
+  .day-header .day-chip {
+    background: linear-gradient(135deg, #1E5DFF, #0A3CC2);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    box-shadow: 0 6px 18px rgba(30,93,255,0.25);
+  }
+  .day-header .day-label {
+    font-family: 'Manrope', sans-serif;
+    font-size: 9pt;
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .day-header .brand img {
+    height: 7.5mm;
+  }
+
+  .day-title-wrap {
+    position: relative;
+    z-index: 2;
+    padding: 6mm 16mm 3mm;
+  }
+  .day-title-wrap .num-big {
+    font-family: 'Manrope', sans-serif;
+    font-size: 70pt;
+    font-weight: 800;
+    line-height: 0.9;
+    color: var(--tint);
+    position: absolute;
+    right: 14mm;
+    top: -2mm;
+    z-index: 0;
+    letter-spacing: -0.04em;
+  }
+  .day-title-wrap h2 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 26pt;
+    color: var(--navy);
+    margin: 0;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    position: relative;
+    z-index: 1;
+    max-width: 150mm;
+  }
+  .day-title-wrap h2 .accent {
+    color: var(--blue);
+  }
+  .day-title-wrap .subtitle {
+    margin-top: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5pt;
+    color: var(--body);
+    line-height: 1.45;
+    max-width: 168mm;
+    font-weight: 400;
+  }
+
+  .day-body {
+    padding: 4mm 16mm 4mm;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .module-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4mm 7mm;
+  }
+  .module {
+    display: flex;
+    gap: 4mm;
+    padding: 3mm 0;
+    border-top: 1px solid var(--line);
+  }
+  .module:nth-child(1), .module:nth-child(2) { border-top: none; padding-top: 0; }
+  .module .index {
+    flex-shrink: 0;
+    width: 8mm;
+    height: 8mm;
+    border-radius: 7px;
+    background: var(--tint);
+    color: var(--blue);
+    font-family: 'Manrope', sans-serif;
+    font-size: 9pt;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(30,93,255,0.18);
+  }
+  .module .text h3 {
+    margin: 0 0 2px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 10.5pt;
+    color: var(--navy);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .module .text p {
+    margin: 0;
+    font-size: 9pt;
+    color: var(--body);
+    line-height: 1.45;
+  }
+
+  .day-footer {
+    margin-top: auto;
+    padding: 3mm 16mm 6mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--line);
+    font-family: 'Manrope', sans-serif;
+    font-size: 8.5pt;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .day-footer .page-num {
+    color: var(--navy);
+    font-weight: 700;
+  }
+  .day-footer .dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--blue);
+    display: inline-block;
+    margin: 0 8px 1px;
+    vertical-align: middle;
+  }
+
+  /* ============ CLOSING PAGE ============ */
+  .closing {
+    background:
+      linear-gradient(135deg, #0B1437 0%, #14224F 60%, #1E3FA8 100%);
+    color: #fff;
+  }
+  .closing .top-bar {
+    padding: 14mm 16mm 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+  .closing .top-bar img {
+    height: 9mm;
+  }
+  .closing .top-bar .pill {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #DCE6FF;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 8.5pt;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .closing .hero {
+    padding: 14mm 16mm 0;
+    position: relative;
+    z-index: 2;
+  }
+  .closing .hero h2 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 44pt;
+    line-height: 1.0;
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .closing .hero h2 span {
+    background: linear-gradient(135deg, #6FA0FF 0%, #B5CCFF 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+    padding-right: 0.08em;
+    margin-right: -0.04em;
+  }
+  .closing .hero p {
+    font-size: 12pt;
+    color: #CFD8F5;
+    line-height: 1.55;
+    margin-top: 6mm;
+    max-width: 160mm;
+  }
+  .closing .grid {
+    margin: 12mm 16mm 0;
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6mm;
+  }
+  .closing .card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 8mm;
+    backdrop-filter: blur(10px);
+  }
+  .closing .card h4 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 9pt;
+    color: #6FA0FF;
+    margin: 0 0 6px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .closing .card .big {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13.5pt;
+    font-weight: 700;
+    color: #fff;
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
+  .closing .card p {
+    margin: 6px 0 0;
+    font-size: 10pt;
+    color: #BBC6E9;
+    line-height: 1.55;
+  }
+  .closing-footer {
+    margin-top: auto;
+    padding: 12mm 16mm 12mm;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    font-family: 'Manrope', sans-serif;
+    font-size: 9pt;
+    color: #9DAAD2;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .closing-footer strong { color: #fff; }
+  .closing .bg-x {
+    position: absolute;
+    right: -30mm;
+    bottom: -30mm;
+    width: 180mm;
+    opacity: 0.06;
+    z-index: 0;
+  }
+
+  /* Print */
+  @media print {
+    body { background: #fff; }
+    .page { box-shadow: none !important; margin: 0 auto !important; }
+  }
+  @media screen {
+    .page {
+      margin: 20px auto;
+      box-shadow: 0 12px 40px rgba(11,20,55,0.18);
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================== COVER PAGE ============================== -->
+<section class="page cover">
+  <div class="blob" style="width:280mm;height:280mm;left:-110mm;top:-150mm;background:radial-gradient(circle, rgba(30,93,255,0.12), transparent 60%);"></div>
+  <div class="blob" style="width:200mm;height:200mm;right:-90mm;bottom:-90mm;background:radial-gradient(circle, rgba(30,93,255,0.10), transparent 60%);"></div>
+  <div class="dots" style="left:8mm; top:9mm;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="dots" style="right:8mm; bottom:65mm;"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+  <div class="top-bar">
+    <div class="brand"><img src="logo-dark.png" alt="ElevateX" /></div>
+    <div class="meta">
+      <strong>Workshop Brochure</strong><br/>
+      AI Fluency for Students
+    </div>
+  </div>
+
+  <div class="cover-hero">
+    <div class="eyebrow">A Four Session Workshop</div>
+    <h1>Prompt to <span class="accent">Productive</span></h1>
+    <p class="lede">A practical journey from curious chatbot user to confident, deliberate operator. Built for students who want to study smarter, write sharper, and prepare for careers that already expect AI fluency.</p>
+
+    <div class="brief-card">
+      <h3>About the Program</h3>
+      <p><strong>Prompt to Productive</strong> is a four day AI Fluency program designed for university students who want to move past casual chatbot use and into deliberate, skillful collaboration with artificial intelligence. Across four guided sessions of roughly ninety minutes each, participants build the mental models, prompt writing discipline, ethical judgment, and platform awareness that separate a confused user from a confident operator.</p>
+      <p>Each day pairs short concept blocks with hands on practice, so students leave the room with prompts, templates, and habits they can apply the very next morning to coursework, projects, internships, and applications. By the final session, every participant will have shaped a personal AI workflow, a private learning context document, a study system, a career toolkit, and a written collaboration policy that reflects their own values.</p>
+    </div>
+
+    <div class="pillars">
+      <div class="pillar"><div class="strip"></div><div class="num">DAY 01</div><h4>Hidden Mechanics of AI</h4><p>Mental models, fluency frameworks, prompts, and ethics that hold up.</p></div>
+      <div class="pillar"><div class="strip"></div><div class="num">DAY 02</div><h4>AI as a Study Partner</h4><p>From answer engine to private tutor and living learning journal.</p></div>
+      <div class="pillar"><div class="strip"></div><div class="num">DAY 03</div><h4>Career Mastery with AI</h4><p>Direction, applications, interviews, and an honest professional voice.</p></div>
+      <div class="pillar"><div class="strip"></div><div class="num">DAY 04</div><h4>Become the 1% User</h4><p>Platforms, context strategy, free tier tactics, and pro capabilities.</p></div>
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <div class="signature">
+      <strong>Presented By ElevateX</strong><br/>
+      AI Skills for Tomorrow &nbsp;&middot;&nbsp; Skills &middot; AI &middot; Growth
+    </div>
+    <div class="cta-stack">
+      <div class="label">Connect</div>
+      <div class="value">facebook.com/elevatex.aipro</div>
+      <div class="value" style="font-size:10pt;color:var(--body);font-weight:500;">mail.elevatex@gmail.com</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================== DAY 1 ============================== -->
+<section class="page day-page">
+  <div class="day-header">
+    <div class="left">
+      <div class="day-chip">Day 01</div>
+      <div class="day-label">Session One &nbsp;&middot;&nbsp; 90 Minutes</div>
+    </div>
+    <div class="brand"><img src="logo-dark.png" alt="ElevateX" /></div>
+  </div>
+
+  <div class="day-title-wrap">
+    <div class="num-big">01</div>
+    <h2>The Hidden <span class="accent">Mechanics of AI</span></h2>
+    <p class="subtitle">Foundations of how modern AI actually works, and how to think with it instead of around it. By the end of the session, participants will hold a clear mental model of the machine behind the chat box, a working framework for fluency, and a personal code for ethical use.</p>
+  </div>
+
+  <div class="day-body">
+    <div class="module-grid">
+      <div class="module">
+        <div class="index">01</div>
+        <div class="text">
+          <h3>A Way of Thinking About AI That Stays With You</h3>
+          <p>A clear mental model of what large language models are, what they can and cannot do, and why understanding the machine behind the chat box quietly changes every prompt you ever write.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">02</div>
+        <div class="text">
+          <h3>The Frameworks of AI Fluency</h3>
+          <p>A four part fluency model covering Delegation, Description, Discernment, and Diligence that turns scattered chatbot use into a repeatable workflow you can teach a friend in one sitting.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">03</div>
+        <div class="text">
+          <h3>Prompt Fundamentals</h3>
+          <p>The anatomy of a strong prompt, the role of context, instruction, examples, and constraints, and the small phrasing choices that quietly double the quality of an answer.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">04</div>
+        <div class="text">
+          <h3>Diligence and Ethics</h3>
+          <p>A working definition of responsible use, how to spot hallucinations, when to disclose AI assistance, and how to keep your academic integrity firmly intact across every assignment.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">05</div>
+        <div class="text">
+          <h3>Building a Personal Learning Context Document</h3>
+          <p>A single living file that captures who you are, what you study, how you write, and how you think, so every future chat begins with you already understood.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">06</div>
+        <div class="text">
+          <h3>Fueling Your AI Assistant</h3>
+          <p>The practical craft of feeding the model the right inputs, in the right order, at the right depth, rather than typing one short line and hoping the output happens to land.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">07</div>
+        <div class="text">
+          <h3>Automation versus Augmentation</h3>
+          <p>A clear line between tasks worth handing over entirely and tasks where AI should sit beside you rather than in front of you, with examples drawn from real student workloads.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">08</div>
+        <div class="text">
+          <h3>Being the Human in the Loop</h3>
+          <p>What it actually means to stay in charge of judgment, decisions, and final outputs when an AI is doing most of the typing, and the checkpoints that keep your work honestly yours.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">09</div>
+        <div class="text">
+          <h3>Responsible Use in Academic and Professional Life</h3>
+          <p>A personal code of conduct for classrooms, assignments, group projects, internships, and the working years that follow, written in your own words rather than borrowed policy.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">10</div>
+        <div class="text">
+          <h3>Session Practical: Your First Production Prompt</h3>
+          <p>A guided exercise where each participant rewrites a real coursework prompt using the frameworks above, then compares before and after results to feel the difference firsthand.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-footer">
+    <div>Prompt to Productive <span class="dot"></span> ElevateX</div>
+    <div class="page-num">Day 01 of 04</div>
+  </div>
+</section>
+
+
+<!-- ============================== DAY 2 ============================== -->
+<section class="page day-page">
+  <div class="day-header">
+    <div class="left">
+      <div class="day-chip">Day 02</div>
+      <div class="day-label">Session Two &nbsp;&middot;&nbsp; 90 Minutes</div>
+    </div>
+    <div class="brand"><img src="logo-dark.png" alt="ElevateX" /></div>
+  </div>
+
+  <div class="day-title-wrap">
+    <div class="num-big">02</div>
+    <h2>AI as Your <span class="accent">Study Partner</span></h2>
+    <p class="subtitle">Turning the chat window from a quick answer machine into a long term tutor, a study coach, and a private learning archive. Participants leave with a tutor configuration, a fact check routine, study asset workflows, and a journaling habit they can carry across semesters.</p>
+  </div>
+
+  <div class="day-body">
+    <div class="module-grid">
+      <div class="module">
+        <div class="index">01</div>
+        <div class="text">
+          <h3>Partner Versus Answer Engine</h3>
+          <p>The mindset shift from asking AI to finish your thinking to inviting it to think alongside you, and why the second mode produces graduates who actually understand their own degree.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">02</div>
+        <div class="text">
+          <h3>Configuring AI as Your Tutor</h3>
+          <p>Setting up custom instructions, system prompts, and personas that make the model behave like a patient subject expert rather than a generic assistant chasing the next reply.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">03</div>
+        <div class="text">
+          <h3>A Fallback System for Returning to a Semester</h3>
+          <p>Building a structured set of summaries, flashcards, and recap prompts so that opening a new term feels like resuming a saved game rather than starting your studies from scratch.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">04</div>
+        <div class="text">
+          <h3>Fact Checking Whether You Actually Learned</h3>
+          <p>Simple Socratic prompt patterns the model can run on you, including blind recall checks, concept transfer questions, and explain it back routines that expose shaky understanding.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">05</div>
+        <div class="text">
+          <h3>Approaches to Building Your Study Assets</h3>
+          <p>Practical workflows for turning lectures, slides, and textbooks into clean notes, mind maps, practice problems, mock quizzes, and exam ready summaries you can revisit in minutes.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">06</div>
+        <div class="text">
+          <h3>The Living Learning Journal</h3>
+          <p>A weekly journaling practice, supported by reusable prompt templates, that tracks what you studied, what you understood, what is still fuzzy, and how your thinking is changing over months.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">07</div>
+        <div class="text">
+          <h3>Memory and Continuity Across Sessions</h3>
+          <p>How to use saved instructions, project folders, and reusable context blocks so that your tutor remembers you and your subjects, even when the chat window itself forgets.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">08</div>
+        <div class="text">
+          <h3>Designing a Personal Curriculum</h3>
+          <p>Using AI to convert a vague goal such as getting better at statistics into a week by week study plan with checkpoints, review cycles, and an honest weekly self assessment.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">09</div>
+        <div class="text">
+          <h3>Note Compression and Active Recall Prompts</h3>
+          <p>Ready to copy prompts that shrink long readings into layered notes, then quiz you on those notes without giving away the answers, so revision becomes practice instead of rereading.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">10</div>
+        <div class="text">
+          <h3>Session Practical: Build Your Subject Companion</h3>
+          <p>Each participant configures a tutor for one current course, generates a study pack, and runs a self test, leaving the room with a working assistant for an actual subject they study.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-footer">
+    <div>Prompt to Productive <span class="dot"></span> ElevateX</div>
+    <div class="page-num">Day 02 of 04</div>
+  </div>
+</section>
+
+
+<!-- ============================== DAY 3 ============================== -->
+<section class="page day-page">
+  <div class="day-header">
+    <div class="left">
+      <div class="day-chip">Day 03</div>
+      <div class="day-label">Session Three &nbsp;&middot;&nbsp; 90 Minutes</div>
+    </div>
+    <div class="brand"><img src="logo-dark.png" alt="ElevateX" /></div>
+  </div>
+
+  <div class="day-title-wrap">
+    <div class="num-big">03</div>
+    <h2>Career Mastery <span class="accent">With AI</span></h2>
+    <p class="subtitle">A grounded approach to using AI across career exploration, skill building, the job hunt, applications, and interviews. The focus is on raising your standards without losing your own voice, so the materials you send out still sound like a real person worth meeting.</p>
+  </div>
+
+  <div class="day-body">
+    <div class="module-grid">
+      <div class="module">
+        <div class="index">01</div>
+        <div class="text">
+          <h3>Career Exploration Without Guesswork</h3>
+          <p>Structured prompts for mapping your skills, interests, and constraints against real roles, industries, and career paths, so direction becomes a research process rather than a hope.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">02</div>
+        <div class="text">
+          <h3>Skill Building With Purpose</h3>
+          <p>Using AI to identify the exact gap between where you stand and where a target role expects you to be, then building a focused study plan that closes it without busywork.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">03</div>
+        <div class="text">
+          <h3>Job Searching With a Clear System</h3>
+          <p>Prompt patterns for filtering listings, decoding job descriptions, surfacing hidden requirements, and tracking applications in a way that does not consume an entire week.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">04</div>
+        <div class="text">
+          <h3>Authentic Application Materials</h3>
+          <p>Writing CVs, cover letters, LinkedIn summaries, and outreach emails with AI support while keeping your voice, your story, and your honest experience at the center of every line.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">05</div>
+        <div class="text">
+          <h3>Tailoring at Scale Without Sounding Generic</h3>
+          <p>Workflows that adapt the same application to many roles in minutes, without producing the bland, recycled tone that recruiters now recognize within a single paragraph.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">06</div>
+        <div class="text">
+          <h3>Interview Practice With AI as Your Coach</h3>
+          <p>Running mock interviews, behavioural question drills, technical walk throughs, and post interview debriefs with feedback on clarity, structure, confidence, and pacing.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">07</div>
+        <div class="text">
+          <h3>Salary, Offer, and Negotiation Preparation</h3>
+          <p>Prompts that help you research compensation ranges, prepare counter offers, and rehearse difficult conversations before they happen, so you arrive at the table already prepared.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">08</div>
+        <div class="text">
+          <h3>Portfolio, Projects, and Proof of Work</h3>
+          <p>How to use AI to plan, structure, document, and present the kind of side projects that make applications stand out, while keeping the credit for the work clearly with you.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">09</div>
+        <div class="text">
+          <h3>A Strategic Personal Career Document</h3>
+          <p>A one page personal career plan, refreshed each semester, that ties your studies, projects, and applications into one coherent direction instead of a scattered checklist.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">10</div>
+        <div class="text">
+          <h3>Session Practical: Apply, Interview, Iterate</h3>
+          <p>Participants tailor a real CV and cover letter for a chosen listing, then run a live mock interview round and walk out with concrete feedback to act on within the week.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-footer">
+    <div>Prompt to Productive <span class="dot"></span> ElevateX</div>
+    <div class="page-num">Day 03 of 04</div>
+  </div>
+</section>
+
+
+<!-- ============================== DAY 4 ============================== -->
+<section class="page day-page">
+  <div class="day-header">
+    <div class="left">
+      <div class="day-chip">Day 04</div>
+      <div class="day-label">Session Four &nbsp;&middot;&nbsp; 90 Minutes</div>
+    </div>
+    <div class="brand"><img src="logo-dark.png" alt="ElevateX" /></div>
+  </div>
+
+  <div class="day-title-wrap">
+    <div class="num-big">04</div>
+    <h2>Become the <span class="accent">One Percent</span> AI User</h2>
+    <p class="subtitle">The closing session pulls together the tactics that quietly separate top operators from everyone else: platform awareness, context discipline, free tier mastery, and the pro features hidden in plain sight. Participants leave with a personal collaboration policy and a long term growth framework.</p>
+  </div>
+
+  <div class="day-body">
+    <div class="module-grid">
+      <div class="module">
+        <div class="index">01</div>
+        <div class="text">
+          <h3>Platform Awareness</h3>
+          <p>A clear eyed comparison of the major chat platforms, image tools, coding assistants, voice models, and research engines, so you stop reaching for one hammer on every job.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">02</div>
+        <div class="text">
+          <h3>The Context Economy</h3>
+          <p>A working definition of context windows, tokens, and memory budgets, and why every serious user thinks about context the way a careful spender thinks about money.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">03</div>
+        <div class="text">
+          <h3>The Commandments of Context</h3>
+          <p>A short, practical set of rules covering what to load first, what to hold back, when to summarise, when to start fresh, and how to keep long conversations sharp rather than slow.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">04</div>
+        <div class="text">
+          <h3>Free Tier Maximisation</h3>
+          <p>A practical playbook for getting near paid quality out of free accounts, including model selection, prompt routing, session hygiene, and the small habits that stretch every message further.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">05</div>
+        <div class="text">
+          <h3>Stretching the Limit Without Hitting It</h3>
+          <p>Techniques for splitting tasks, reusing outputs, batching questions, and holding reserve capacity so your free quota lasts a full study week rather than one productive afternoon.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">06</div>
+        <div class="text">
+          <h3>The Pro Capabilities Most People Miss</h3>
+          <p>A guided tour of features hiding in plain sight, including projects, custom instructions, file uploads, canvas modes, deep research tools, voice modes, and structured outputs.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">07</div>
+        <div class="text">
+          <h3>Choosing the Right Tool for the Job</h3>
+          <p>A decision guide that matches common tasks, such as writing, coding, research, slides, images, and data, to the platform that actually does the job best on a given day.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">08</div>
+        <div class="text">
+          <h3>A Personal AI Collaboration Policy</h3>
+          <p>A one page document that states, in your own words, where you welcome AI help, where you do the work alone, and how you disclose collaboration to teachers, teammates, and employers.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">09</div>
+        <div class="text">
+          <h3>A Framework for Continued Growth</h3>
+          <p>A quarterly self review structure that keeps your AI skills compounding long after the workshop ends, including how to track new releases, retire old habits, and grow without chasing every update.</p>
+        </div>
+      </div>
+      <div class="module">
+        <div class="index">10</div>
+        <div class="text">
+          <h3>Closing Practical: Your Personal Operating System</h3>
+          <p>Each participant assembles a one page personal AI operating system: preferred platforms, context rules, free tier playbook, and collaboration policy, signed in their own name.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-footer">
+    <div>Prompt to Productive <span class="dot"></span> ElevateX</div>
+    <div class="page-num">Day 04 of 04</div>
+  </div>
+</section>
+
+
+<!-- ============================== CLOSING PAGE ============================== -->
+<section class="page closing">
+  <img src="logo-x.png" alt="" class="bg-x" />
+
+  <div class="top-bar">
+    <img src="logo-white.png" alt="ElevateX" />
+    <div class="pill">AI Skills for Tomorrow</div>
+  </div>
+
+  <div class="hero">
+    <h2>Built for students.<br/><span>Trusted by the curious.</span></h2>
+    <p>Prompt to Productive is part of the wider ElevateX mission: equipping students with the practical skills that the next decade of work will quietly demand. Reserve a seat, host the workshop on your campus, or invite us to your club, faculty, or programme.</p>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h4>Contact</h4>
+      <div class="big">mail.elevatex@gmail.com</div>
+      <p>For workshop bookings, partnerships, custom cohorts, and speaker invitations across campuses, clubs, and faculties.</p>
+    </div>
+    <div class="card">
+      <h4>Community</h4>
+      <div class="big">facebook.com/elevatex.aipro</div>
+      <p>Follow along for live sessions, free resources, prompt libraries, and announcements about upcoming workshops and open enrolments.</p>
+    </div>
+    <div class="card">
+      <h4>What You Take Home</h4>
+      <p style="color:#DCE6FF;">A personal learning context document, a configured study tutor, a career toolkit, a written collaboration policy, and a one page personal AI operating system you can carry into every semester that follows.</p>
+    </div>
+    <div class="card">
+      <h4>Who It Is For</h4>
+      <p style="color:#DCE6FF;">University students, fresh graduates, and early career professionals who want to use AI with discipline rather than novelty, and who plan to remain useful as the tools keep changing.</p>
+    </div>
+  </div>
+
+  <div class="closing-footer">
+    <div>&copy; ElevateX <span style="opacity:0.6;">&nbsp;&middot;&nbsp;</span> <strong>Skills &middot; AI &middot; Growth</strong></div>
+    <div>Prompt to Productive <span style="opacity:0.6;">&nbsp;&middot;&nbsp;</span> <strong>Workshop Brochure</strong></div>
+  </div>
+</section>
+
+</body>
+</html>
