@@ -798,9 +798,34 @@
       line-height: 1.7;
       overflow-x: auto;
       position: relative;
-      white-space: pre-wrap;
+      white-space: pre;
       box-shadow: var(--shadow-lg);
       border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .copy-btn {
+      margin-top: 8px;
+      padding: 8px 16px;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #1742c0;
+    }
+
+    .copy-btn.copied {
+      background: #10B981;
     }
 
     .prompt-block .label {
@@ -1093,6 +1118,7 @@
       padding: 32px;
       border-radius: 20px;
       border: 1px solid transparent;
+      min-width: 0;
     }
 
     .split-col.before {
@@ -1102,9 +1128,9 @@
     }
 
     .split-col.after {
-      background: rgba(255, 255, 255, 0.6);
+      background: #f0fdf4;
       box-shadow: var(--shadow-sm);
-      border-color: rgba(30, 93, 255, 0.1);
+      border-color: #bbf7d0;
     }
 
     .split-col .col-tag {
@@ -2533,9 +2559,16 @@
           1. ... 2. ... 3. ...
           [<span class="token">INPUT</span>] Here is the material you should use:
           """ ... """
-          [<span class="token">OUTPUT RULES</span>] Do not use these phrases: ... . Mark any claim
-          you are unsure about with [VERIFY]. End by asking me three
-          sharpening questions before you draft anything longer.</div>
+          [<span class="token">OUTPUT RULES</span>] Do not use these phrases: ... . Mark any claim you are unsure about
+          with [VERIFY]. End by asking me three sharpening questions before you draft anything longer.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Copy Prompt
+        </button>
       </div>
 
       <div class="callout">
@@ -2567,9 +2600,7 @@
         <div class="split-col before">
           <span class="col-tag">Before</span>
           <h4>The lazy prompt</h4>
-          <div class="prompt-block-light" style="margin-bottom:16px;"><span class="label">What Riya Typed at 11:04
-              PM</span>write me a 1500 word analysis of
-            coca cola share a coke campaign</div>
+          <div class="prompt-block-light" style="margin-bottom:16px;"><span class="label">What Riya Typed at 11:04 PM</span>write me a 1500 word analysis of coca cola share a coke campaign</div>
           <div class="output-block bland">
             "Coca Cola's Share a Coke campaign was a remarkably successful global marketing initiative that effectively
             used personalisation to engage consumers in today's fast paced beverage industry. By replacing the iconic
@@ -2583,27 +2614,24 @@
         <div class="split-col after">
           <span class="col-tag">After</span>
           <h4>The CRAFT-RIO prompt</h4>
-          <div class="prompt-block" style="margin-bottom:16px;"><span class="label">What Riya Rebuilt at 11:11
-              PM</span>[<span class="token">CONTEXT</span>] I am a 3rd year BBA marketing student in
-            Dhaka. Dr. Hasan dislikes generic buzzwords and
-            rewards specific evidence, named theories, and
-            unconventional angles.
-            [<span class="token">ROLE</span>] Act as a brand strategy lecturer who has
-            graded 500 student essays.
-            [<span class="token">ACTION</span>] Build an outline for an essay on Coca
-            Cola's Share a Coke campaign (Australia 2011,
-            global 2014). Do not write the essay yet.
-            [<span class="token">FORMAT</span>] Thesis sentence + 3 sections with
-            sub claims + counter argument + open conclusion.
-            [<span class="token">TONE</span>] Sharp business journalist, no jargon.
-            [<span class="token">REASONING</span>] Before writing, decide:
-            1. What makes it academically interesting?
-            2. What is the strongest counter argument?
-            3. Which theory frames it best (Kotler, Aaker,
-            Holt, Sharp) and why?
-            [<span class="token">OUTPUT RULES</span>] No "synergy", "leverage",
-            "resonance". Mark uncertain claims with [VERIFY].
-            End by asking me 3 sharpening questions.</div>
+          <div class="prompt-block" style="margin-bottom:8px;"><span class="label">What Riya Rebuilt at 11:11 PM</span>[<span class="token">CONTEXT</span>] I am a 3rd year BBA marketing student in Dhaka. Dr. Hasan dislikes generic buzzwords and rewards specific evidence, named theories, and unconventional angles.
+[<span class="token">ROLE</span>] Act as a brand strategy lecturer who has graded 500 student essays.
+[<span class="token">ACTION</span>] Build an outline for an essay on Coca Cola's Share a Coke campaign (Australia 2011, global 2014). Do not write the essay yet.
+[<span class="token">FORMAT</span>] Thesis sentence + 3 sections with sub claims + counter argument + open conclusion.
+[<span class="token">TONE</span>] Sharp business journalist, no jargon.
+[<span class="token">REASONING</span>] Before writing, decide:
+1. What makes it academically interesting?
+2. What is the strongest counter argument?
+3. Which theory frames it best (Kotler, Aaker, Holt, Sharp) and why?
+[<span class="token">OUTPUT RULES</span>] No "synergy", "leverage", "resonance". Mark uncertain claims with [VERIFY]. End by asking me 3 sharpening questions.</div>
+          <button class="copy-btn" onclick="copyPrompt(this)" style="margin-bottom: 24px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copy Prompt
+          </button>
           <div class="output-block">
             "Thesis: Share a Coke succeeded not because of personalisation but because it converted a private bottle
             into a public social object. Section 1: identity transfer ... Section 2: scarcity engineering (150 names, 18
@@ -3199,6 +3227,24 @@
       }
     })();
 
+    window.copyPrompt = function (btn) {
+      var block = btn.previousElementSibling;
+      if (block && block.classList.contains('prompt-block')) {
+        var clone = block.cloneNode(true);
+        var label = clone.querySelector('.label');
+        if (label) label.remove();
+        var text = clone.innerText || clone.textContent;
+        navigator.clipboard.writeText(text.trim()).then(function () {
+          var originalContent = btn.innerHTML;
+          btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!';
+          btn.classList.add('copied');
+          setTimeout(function () {
+            btn.innerHTML = originalContent;
+            btn.classList.remove('copied');
+          }, 2000);
+        });
+      }
+    };
   </script>
 
 </body>
